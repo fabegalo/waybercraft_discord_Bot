@@ -19,7 +19,7 @@ client.on('message', message => {
     //message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
     if(calaboca){
         const user = client.users.cache.get(message.author.id);
-        user.send('Cala a sua boca !!');
+        user.send('Fica queito MEU !!!');
     }
     
     if (!message.content.startsWith(prefix) || message.author.bot) return;
