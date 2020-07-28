@@ -6,7 +6,7 @@ const { prefix, token } = require('./config.json');
 
 var calaboca = false;
 
-client.login(token);
+client.login(process.env.token);
 
 client.once('ready', () => {
 	console.log('Ready!');
