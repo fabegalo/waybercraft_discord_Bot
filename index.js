@@ -7,6 +7,7 @@ const { prefix, token } = require('./config.json');
 var calaboca = false;
 
 client.login(process.env.token);
+//client.login('NzM3NTQxNzkwNTQ2MTMzMDAy.Xx-3UQ.LOmxC8yXR9W7MPSKL9xvNrGOqHM');
 
 client.once('ready', () => {
 	console.log('Ready!');
@@ -36,6 +37,29 @@ client.on('message', message => {
         console.log(calaboca);
     }
 
+    // if(command == 'send'){
+       
+    //     if (!args.length) {
+    //         return message.channel.send(`Faltam Argumentos , ${message.author}!`);
+    //     }else{
+    //         const args = message.content.slice(prefix.length).trim().split('send');
+    //         message.guild.members.cache.each(
+    //             guild => guild.user.send(args)
+    //         );
+    //     }
+    // }
+
+    if(command == 'users'){
+        var list = [];
+        var count = 0;
+        message.guild.members.cache.each(function(){
+            //guild => list += guild.user.username + ' \n'
+            count++;
+        });
+
+        message.channel.send('Quantidade: ' + count + '\n' + list);
+    }
+
     if(command == 'toca'){
         if (!args.length) {
             return message.channel.send(`Faltam Argumentos , ${message.author}!`);
@@ -60,5 +84,9 @@ client.on('message', message => {
             });
         }
     }
-});
 
+    if(command == 'comandos'){
+        const user = client.users.cache.get(message.author.id);
+        user.send('Olá, eu sou o waynerzito estou aqui para te ajudar \n'+'Aqui esta a lista de comandos: \n'+ '!players \n !toca {url} \n !users \n !calaboca');
+    }
+});
