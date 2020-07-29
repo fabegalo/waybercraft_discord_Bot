@@ -4,10 +4,9 @@ const client = new Discord.Client();
 const exampleEmbed = new Discord.MessageEmbed().setTitle('Some title');
 const { prefix, token } = require('./config.json');
 
-var calaboca = false;
+var sendQuieto = false;
 
 client.login(process.env.token);
-//client.login('NzM3NTQxNzkwNTQ2MTMzMDAy.Xx-3UQ.LOmxC8yXR9W7MPSKL9xvNrGOqHM');
 
 client.once('ready', () => {
 	console.log('Ready!');
@@ -18,7 +17,7 @@ process.on('unhandledRejection', error => console.error('Uncaught Promise Reject
 client.on('message', message => {
 
     //message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
-    if(calaboca){
+    if(sendQuieto){
         const user = client.users.cache.get(message.author.id);
         user.send('Fica queito MEU !!!');
     }
@@ -29,12 +28,11 @@ client.on('message', message => {
     const command = args.shift().toLowerCase();
 
     if(command == 'calaboca'){
-        if(calaboca == true){
-            calaboca = false;
+        if(sendQuieto == true){
+            sendQuieto = false;
         }else{
-            calaboca = true;
+            sendQuieto = true;
         }
-        console.log(calaboca);
     }
 
     // if(command == 'send'){
@@ -87,6 +85,6 @@ client.on('message', message => {
 
     if(command == 'comandos'){
         const user = client.users.cache.get(message.author.id);
-        user.send('Olá, eu sou o waynerzito estou aqui para te ajudar \n'+'Aqui esta a lista de comandos: \n'+ '!players \n !toca {url} \n !users \n !calaboca');
+        user.send('Olá, eu sou o waynerzito estou aqui para te ajudar \n'+'Aqui esta a lista de comandos: \n'+ ' \n !toca {url} \n !users \n !calaboca');
     }
 });
