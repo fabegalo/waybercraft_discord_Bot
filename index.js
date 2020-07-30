@@ -9,10 +9,7 @@ const words = badword.split(' ');
 
 var sendQuieto = false;
 
-//client.login(process.env.token);
-
-
-client.login('NzM3NTQxNzkwNTQ2MTMzMDAy.Xx-3UQ.pqrAnqbyzUZDxZPNRHMBUPbJoXE');
+client.login(process.env.token);
 
 client.once('ready', () => {
 	console.log('Ready!');
