@@ -56,6 +56,7 @@ client.on('message', message => {
             if(user == undefined){
                 return message.reply('insira uma menção valida!');
             }
+            message.delete;
             const args = message.content.slice(prefix.length).trim().split(`sendTo <@!${user.id}>`);
             user.send(args);
         }
@@ -98,7 +99,7 @@ client.on('message', message => {
     }
 
     if(command == 'comandos'){
-        const user = client.users.cache.get(message.author.id);
+        const user = client.users.cache.get(message.author.id)
         user.send('Olá, eu sou o waynerzito estou aqui para te ajudar \n'+'Aqui esta a lista de comandos: \n'+ ' \n !toca {url} \n !users \n !calaboca \n !sendTo {@mention} {msg here}');
     }
 });
