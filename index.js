@@ -4,10 +4,15 @@ const client = new Discord.Client();
 const fetch = require('node-fetch');
 const exampleEmbed = new Discord.MessageEmbed().setTitle('Some title');
 const { prefix, token } = require('./config.json');
+const { badword } = require('./bad_words.json');
+const words = badword.split(' ');
 
 var sendQuieto = false;
 
-client.login(process.env.token);
+//client.login(process.env.token);
+
+
+client.login('NzM3NTQxNzkwNTQ2MTMzMDAy.Xx-3UQ.pqrAnqbyzUZDxZPNRHMBUPbJoXE');
 
 client.once('ready', () => {
 	console.log('Ready!');
@@ -18,6 +23,17 @@ process.on('unhandledRejection', error => console.error('Uncaught Promise Reject
 client.on('message', message => {
 
     //message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
+
+    if(!message.author.bot){
+        for(x = 0; x < words.length; x++){
+            if(message.content.match('\\b' + words[x] + '\\b', 'gi') != null){
+                console.log('Encontrei !!');
+                message.delete({ timeout: 10 });
+                message.channel.send(`O: ${message.author.username}\n <@!${message.author.id}> meça suas palavras parça`);
+            }
+        }
+    }
+
     if(sendQuieto){
         const user = client.users.cache.get(message.author.id);
         user.send('Fica queito MEU !!!');
@@ -56,7 +72,7 @@ client.on('message', message => {
             if(user == undefined){
                 return message.reply('insira uma menção valida!');
             }
-            message.delete;
+            message.delete({ timeout: 10 });
             const args = message.content.slice(prefix.length).trim().split(`sendTo <@!${user.id}>`);
             user.send(args);
         }
