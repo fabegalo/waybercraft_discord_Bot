@@ -7,8 +7,6 @@ const { prefix, token } = require('./config.json');
 const { badword } = require('./bad_words.json');
 const words = badword.split(' ');
 
-var sendQuieto = false;
-
 client.login(process.env.token);
 
 client.once('ready', () => {
@@ -31,23 +29,10 @@ client.on('message', message => {
         }
     }
 
-    if(sendQuieto){
-        const user = client.users.cache.get(message.author.id);
-        user.send('Fica queito MEU !!!');
-    }
-    
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
     const args = message.content.slice(prefix.length).trim().split(' ');
     const command = args.shift().toLowerCase();
-
-    if(command == 'calaboca'){
-        if(sendQuieto == true){
-            sendQuieto = false;
-        }else{
-            sendQuieto = true;
-        }
-    }
 
     // if(command == 'send'){
        
