@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const DisTube = require('distube');
-const { prefix, token } = require('./config.json');
+
+var { prefix, token } = require('./config.json');
 
 const client = new Discord.Client();
 
@@ -31,6 +32,24 @@ client.on('message', message => {
 
     //message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
 
+    //seção para validar as mensagens enviadas!!!
+
+    //console.log(message.guild.id);
+
+    //Se Mensagem for do servidor WayberCraft
+    if(message.guild.id == '705499998057398273'){
+        if(message.content.match("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(?!$)|$)){4}$")){
+            message.delete();
+            message.channel.send(`<@!${message.author.id}> Você não pode enviar convites de outros servidores aqui!`);
+        }
+    }
+
+    if(message.guild.id == '354099395903488001'){
+        prefix = ':>';
+    }else {
+        prefix = '!';
+    }
+
     if (!message.author.bot) {
         for (x = 0; x < words.length; x++) {
             if (message.content.match('\\b' + words[x] + '\\b', 'gi') != null) {
@@ -39,6 +58,8 @@ client.on('message', message => {
             }
         }
     }
+
+    //-----------------Seção para tratar comandos dos usuarios------------------------------------------------------------------
 
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
