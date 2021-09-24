@@ -37,14 +37,14 @@ client.on('message', message => {
     //console.log(message.guild.id);
 
     //Se Mensagem for do servidor WayberCraft
-    if(message.guild.id == '705499998057398273'){
+    if(message.guild != null && message.guild.id == '705499998057398273'){
         if(message.content.match("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(?!$)|$)){4}$")){
             message.delete();
             message.channel.send(`<@!${message.author.id}> Você não pode enviar convites de outros servidores aqui!`);
         }
     }
 
-    if(message.guild.id == '354099395903488001'){
+    if(message.guild != null && message.guild.id == '354099395903488001'){
         prefix = ':>';
     }else {
         prefix = '!';
