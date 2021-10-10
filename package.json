@@ -16,7 +16,8 @@
     "ffmpeg-static": "^4.4.0",
     "libsodium-wrappers": "^0.7.9",
     "node-fetch": "^2.6.5",
-    "opusscript": "0.0.8"
+    "opusscript": "0.0.8",
+    "ansi-regex": ">=5.0.1"
   },
   "devDependencies": {
     "@types/node": "^16.10.3"
