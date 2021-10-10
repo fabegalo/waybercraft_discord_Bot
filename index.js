@@ -1,19 +1,53 @@
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+
 const Discord = require('discord.js');
-const DisTube = require('distube');
 
-var { prefix, token } = require('./config.json');
+const { Client, Intents } = require('discord.js');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
 
-const client = new Discord.Client();
+const { DisTube } = require('distube');
+const fs = require('fs');
+
+const scores = require("./scores.json");
+typeof scores; // object
+
+var { prefix, token, APPLICATION_ID, GUILD_ID } = require('./config.json');
 
 const fetch = require('node-fetch'); //https requests
-
-const exampleEmbed = new Discord.MessageEmbed().setTitle('Some title'); //embed discord
 
 const { badword } = require('./bad_words.json');
 const words = badword.split(' ');
 
+const commands = [{
+    name: 'ping',
+    description: 'Replies with Pong!'
+}];
+
+const rest = new REST({ version: '9' }).setToken(token);
+
+(async () => {
+    try {
+        console.log('Started refreshing application (/) commands.');
+
+        await rest.put(
+            Routes.applicationGuildCommands(APPLICATION_ID, GUILD_ID),
+            { body: commands },
+        );
+
+        console.log('Successfully reloaded application (/) commands.');
+    } catch (error) {
+        console.error(error);
+    }
+})();
+
+client.login(token); //teste
+
+//client.login(process.env.token); //prod
+
 client.once('ready', () => {
     console.log('Ready Bot Online ! WayberCraft!');
+    console.log(`Logged in as ${client.user.tag}!`);
 });
 
 client.once("reconnecting", () => {
@@ -24,11 +58,26 @@ client.once("disconnect", () => {
     console.log("Disconnect!");
 });
 
+client.on('interactionCreate', async interaction => {
+
+    //console.log(interaction);
+
+    if (!interaction.isCommand()) return;
+
+    if (interaction.commandName === 'ping') {
+        await interaction.reply('Pong!');
+    }
+});
+
+client.on("messageCreate", message => {
+    //console.log(message);
+});
+
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error));
 
-const distube = new DisTube(client, { searchSongs: true, emitNewSongOnly: true });
+const distube = new DisTube(client, { searchSongs: 15, emitNewSongOnly: true });
 
-client.on('message', message => {
+client.on('message', async message => {
 
     //message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
 
@@ -37,16 +86,16 @@ client.on('message', message => {
     //console.log(message.guild.id);
 
     //Se Mensagem for do servidor WayberCraft
-    if(message.guild != null && message.guild.id == '705499998057398273'){
-        if(message.content.match("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(?!$)|$)){4}$")){
-            message.delete();
-            message.channel.send(`<@!${message.author.id}> Você não pode enviar convites de outros servidores aqui!`);
-        }
+    if (message.guild != null && message.guild.id == '705499998057398273') {
+        // if(message.content.match("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(?!$)|$)){4}$")){
+        //     message.delete();
+        //     message.channel.send(`<@!${message.author.id}> Você não pode enviar convites de outros servidores aqui!`);
+        // }
     }
 
-    if(message.guild != null && message.guild.id == '354099395903488001'){
+    if (message.guild != null && message.guild.id == '354099395903488001') {
         prefix = ':>';
-    }else {
+    } else {
         prefix = '!';
     }
 
@@ -78,6 +127,90 @@ client.on('message', message => {
     //     }
     // }
 
+    if (command == 'limpar') {
+
+        if (!message.member.hasPermission("MANAGE_CHANNELS")) {
+            return message.reply("Você é fraco, lhe falta permissão para Gerenciar Mensagens para usar esse comando");
+        }
+
+        const deleteCount = parseInt(args[0], 10);
+
+        if (!deleteCount || deleteCount < 1 || deleteCount >= 100) {
+            return message.reply("forneça um número de até 100 mensagens a serem excluidas");
+        }
+
+        try {
+            if (message.guild != null) {
+                console.log("Delete Messages!")
+
+                await message.delete();
+
+                await message.channel.messages.fetch({ limit: deleteCount }).then(messages => { // Fetches the messages
+                    message.channel.bulkDelete(messages).then(messages => {
+                        message.channel.send(`${messages.size} mensagens limpas nesse chat solicitado por <@!${message.author.id}>`).then(message => {
+                            message.delete({ timeout: 8000 });
+                            message.react("👌");
+                        });
+                    }).catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
+                });
+
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    if (command == 'avatar') {
+        const args = message.content.slice(prefix.length).trim().split('avatar');
+        const user = client.users.cache.get(message.author.id)
+
+        const embed = new Discord.MessageEmbed()
+            .setTitle('WayberCraft!')
+            .setAuthor("Info", "https://waybercraft.com.br/images/icon_app.png")
+            .setDescription("TESTE")
+            .setThumbnail("https://waybercraft.com.br/images/icon_app.png")
+            .setImage("https://waybercraft.com.br/images/header.png")
+            .setFooter("by fabegalo :D")
+            //.addField("Pontos: ", scores[message.author.tag] == undefined ? 0 : scores[message.author.tag].money)
+            //.addField("Membros: ", message.guild.memberCount ?? "teste")
+            .addField("Voce é gay ?: ", user.username.length > 10 ? "Sim" : "Não")
+            .setColor('ORANGE')
+            .setTimestamp()
+
+        message.channel.send( {embeds: [embed]})
+    }
+
+    if (command == "ping") { // Check if message is "!ping"
+        message.channel.send("Pinging ...") // Placeholder for pinging ... 
+            .then((msg) => { // Resolve promise
+                msg.edit("Ping: " + (Date.now() - msg.createdTimestamp)) // Edits message with current timestamp minus timestamp of message
+            });
+    }
+
+    if (!message.author.bot && command != "pontos") {
+        if (!scores[message.author.tag]) {
+            scores[message.author.tag] = {
+                money: 0
+            };
+        }
+
+        scores[message.author.tag].money += 25;
+        fs.writeFileSync("./scores.json", JSON.stringify(scores));
+    }
+
+    if (command == "pontos") {
+
+        if (!scores[message.author.tag]) {
+            scores[message.author.tag] = {
+                money: 0
+            };
+        }
+
+        message.reply(`Seus pontos é: ${scores[message.author.tag].money}`);
+
+        fs.writeFileSync("./scores.json", JSON.stringify(scores));
+    }
+
     if (command == 'sendto') {
         if (!args.length) {
             return message.channel.send(`Faltam Argumentos , ${message.author}!`);
@@ -108,10 +241,22 @@ client.on('message', message => {
             return message.channel.send(`Faltam Argumentos , ${message.author}!`);
         }
         else {
-            if (message.channel.type !== 'text') return;
             distube.play(message, args.join(" "));
             return;
         }
+    }
+
+    if (command == "autoplay") {
+
+        let queue = distube.getQueue(message);
+
+        if(queue == undefined){
+            message.channel.send('Nenhuma Musica Tocando!');
+            return;
+        }
+
+        let mode = distube.toggleAutoplay(message);
+        message.channel.send("Set autoplay mode to `" + (mode ? "On" : "Off") + "`");
     }
 
     if (["repeat", "loop"].includes(command)) {
@@ -124,8 +269,8 @@ client.on('message', message => {
     }
 
     if (command == "altura") {
-        distube.setVolume(message, 100);
-        message.channel.send("Alterou o volume!");
+        distube.setVolume(message, parseInt(args[0]));
+        message.channel.send("Alterou o volume! para: " + parseInt(args[0]));
     }
 
     if (command == "pular") {
@@ -165,16 +310,16 @@ const status = (queue) => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filt
 
 // DisTube event listeners, more in the documentation page
 distube
-    .on("playSong", (message, queue, song) => message.channel.send(
+    .on("playSong", (queue, song) => queue.textChannel.send(
         `Tocando \`${song.name}\` - \`${song.formattedDuration}\`\nRequerido por: ${song.user}\n${status(queue)}`
     ))
-    .on("addSong", (message, queue, song) => message.channel.send(
-        `Adicionada ${song.name} - \`${song.formattedDuration}\` para a fila por ${song.user}`
+    .on("addSong", (queue, song) => queue.textChannel.send(
+        `Adicionada ${song.name} - \`${song.formattedDuration}\` para a fila por ${song.user}.`
     ))
-    .on("playList", (message, queue, playlist, song) => message.channel.send(
-        `Tocando \`${playlist.name}\` playlist (${playlist.songs.length} músicas).\nRequerido por: ${song.user}\nTocando agora \`${song.name}\` - \`${song.formattedDuration}\`\n${status(queue)}`
-    ))
-    .on("addList", (message, queue, playlist) => message.channel.send(
+    // .on("playList", (message, queue, playlist, song) => message.channel.send(
+    //     `Tocando \`${playlist.name}\` playlist (${playlist.songs.length} músicas).\nRequerido por: ${song.user}\nTocando agora \`${song.name}\` - \`${song.formattedDuration}\`\n${status(queue)}`
+    // ))
+    .on("addList", (queue, playlist) => queue.textChannel.send(
         `Adicionada \`${playlist.name}\` playlist (${playlist.songs.length} músicas) na fila\n${status(queue)}`
     ))
     // DisTubeOptions.searchSongs = true
@@ -184,11 +329,14 @@ distube
     })
     // DisTubeOptions.searchSongs = true
     .on("searchCancel", (message) => message.channel.send(`Pesquisa cancelada`))
+    .on('searchNoResult', message => message.channel.send(`No result found!`))
+    .on('searchInvalidAnswer', message => message.channel.send(`searchInvalidAnswer`))
     .on("error", (message, e) => {
         console.error(e)
         message.channel.send("Um erro encontrado: " + e);
-    });
-
-//client.login(token); //teste
-
-client.login(process.env.token); //prod
+    })
+    .on('searchDone', (message, answer, query) => message.channel.send("Busca Finalizada!"))
+    .on('finish', queue => queue.textChannel.send('Finish queue!'))
+	.on('finishSong', queue => queue.textChannel.send('Finish song!'))
+	.on('disconnect', queue => queue.textChannel.send('Disconnected!'))
+	.on('empty', queue => queue.textChannel.send('Empty!'));

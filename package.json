@@ -9,10 +9,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.5.3",
-    "distube": "^2.8.15",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-api-types": "^0.23.1",
+    "discord.js": "^13.2.0",
+    "distube": "^3.0.0-beta.39",
     "ffmpeg-static": "^4.4.0",
-    "node-fetch": "^2.6.1",
+    "libsodium-wrappers": "^0.7.9",
+    "node-fetch": "^2.6.5",
     "opusscript": "0.0.8"
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.3"
   }
 }
