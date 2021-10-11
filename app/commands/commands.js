@@ -4,9 +4,9 @@ const { MessageEmbed, Permissions } = require('discord.js');
 
 const { getPerfilApi } = require("../api/api")
 
-const fs = require('fs');
-const scores = require("../scores.json");
-typeof scores; // object
+//const fs = require('fs');
+//const scores = require("../scores.json");
+//typeof scores; // object
 
 const { badword } = require('../bad_words.json');
 const words = badword.split(' ');
@@ -192,29 +192,29 @@ async function execCommands(client) {
                 });
         }
 
-        if (!message.author.bot && command != "pontos") {
-            if (!scores[message.author.tag]) {
-                scores[message.author.tag] = {
-                    money: 0
-                };
-            }
+        // if (!message.author.bot && command != "pontos") {
+        //     if (!scores[message.author.tag]) {
+        //         scores[message.author.tag] = {
+        //             money: 0
+        //         };
+        //     }
 
-            scores[message.author.tag].money += 25;
-            fs.writeFileSync("../scores.json", JSON.stringify(scores));
-        }
+        //     scores[message.author.tag].money += 25;
+        //     fs.writeFileSync("../scores.json", JSON.stringify(scores));
+        // }
 
-        if (command == "pontos") {
+        // if (command == "pontos") {
 
-            if (!scores[message.author.tag]) {
-                scores[message.author.tag] = {
-                    money: 0
-                };
-            }
+        //     if (!scores[message.author.tag]) {
+        //         scores[message.author.tag] = {
+        //             money: 0
+        //         };
+        //     }
 
-            message.reply(`Seus pontos é: ${scores[message.author.tag].money}`);
+        //     message.reply(`Seus pontos é: ${scores[message.author.tag].money}`);
 
-            fs.writeFileSync("../scores.json", JSON.stringify(scores));
-        }
+        //     fs.writeFileSync("../scores.json", JSON.stringify(scores));
+        // }
 
         if (command == 'sendto') {
             if (!args.length) {
