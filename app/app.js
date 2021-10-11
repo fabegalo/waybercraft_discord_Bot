@@ -2,7 +2,9 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { Client, Intents } = require('discord.js');
 
-var { token, APPLICATION_ID, GUILD_ID } = require('./config.json');
+var token = process.env.TOKEN;
+var APPLICATION_ID = process.env.APPLICATION_ID;
+var GUILD_ID = process.env.GUILD_ID;
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
 

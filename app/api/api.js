@@ -1,9 +1,8 @@
 const fetch = require('node-fetch'); //https requests
 
-var { USER_BOT, USER_PASS_BOT, APP_URL } = require('../config.json');
-
-const username = USER_BOT;
-const password = USER_PASS_BOT;
+const username = process.env.USER_BOT;
+const password = process.env.USER_PASS_BOT;
+const APP_URL = process.env.APP_URL;
 
 async function getToken() {
 
