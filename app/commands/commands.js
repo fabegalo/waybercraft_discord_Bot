@@ -1,6 +1,8 @@
 var { prefix } = require('../config.json');
 
-const { MessageEmbed, Permissions }= require('discord.js');
+const { MessageEmbed, Permissions } = require('discord.js');
+
+const { getPerfilApi } = require("../api/api")
 
 const fs = require('fs');
 const scores = require("../scores.json");
@@ -57,6 +59,79 @@ async function execCommands(client) {
         //         );
         //     }
         // }
+
+        if (command == 'nickname') {
+
+        }
+
+        if (command == 'perfil') {
+
+            const user = client.users.cache.get(message.author.id)
+            var discordId = user.id;
+
+            var profile = await getPerfilApi(discordId);
+
+            if (profile == false) {
+                message.reply("Conta Discord Não Vinculada!");
+                return;
+            }
+
+            var formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
+
+            const profileEmbed = {
+                color: 0x0099ff,
+                title: 'Minecraft Perfil',
+                url: 'https://www.waybercraft.com.br',
+                author: {
+                    name: 'Profile',
+                    icon_url: 'https://www.waybercraft.com.br/images/icon_app.png',
+                    url: 'https://www.waybercraft.com.br',
+                },
+                description: '**__INFORMAÇÕES DA CONTA__**',
+                thumbnail: {
+                    url: profile.avatarSkin,
+                },
+                fields: [
+                    {
+                        name: '•Claims',
+                        value: profile.claims.length.toString()
+                    },
+                    // {
+                    //     name: '\u200b',
+                    //     value: '\u200b',
+                    //     inline: false,
+                    // },
+                    {
+                        name: '•Money',
+                        value: formatter.format(profile.data.money),
+                        inline: true,
+                    },
+                    {
+                        name: '•Homes',
+                        value: profile.data.homes == undefined ? "0" : Object.keys(profile.data.homes).length.toString(),
+                        inline: true,
+                    },
+                    {
+                        name: '•Tempo de Jogo',
+                        value: profile.timeGame,
+                        inline: true,
+                    },
+                ],
+                image: {
+                    url: profile.bodySkin,
+                },
+                timestamp: new Date(),
+                footer: {
+                    text: 'powered by fabegalo :D',
+                    icon_url: 'https://www.waybercraft.com.br/images/icon_app.png',
+                },
+            };
+
+            message.channel.send({ embeds: [profileEmbed] })
+        }
 
         if (command == 'limpar') {
 
