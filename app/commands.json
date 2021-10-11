@@ -1,0 +1,20 @@
+[
+    {
+        "name": "ping",
+        "description": "Replies with Pong!"
+    },
+    {
+        "name": "tocar",
+        "description": "Tocar uma musica :D !",
+        "options": [
+            {
+                "type": 3,
+                "name": "search",
+                "description": "Nome da pesquisa",
+                "required": true,
+                "choices": null
+            }
+        ],
+        "default_permission": null
+    }
+]
