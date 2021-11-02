@@ -276,6 +276,7 @@ async function execCommands(client) {
         if (command == "altura") {
 
             if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+                message.delete({ timeout: 10 });
                 return message.reply("Você é fraco, lhe falta permissão para usar esse comando");
             }
 
