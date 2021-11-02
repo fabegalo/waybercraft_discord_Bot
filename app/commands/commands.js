@@ -274,14 +274,12 @@ async function execCommands(client) {
         }
 
         if (command == "altura") {
+            var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
 
-            if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
-                message.delete({ timeout: 10 });
-                return message.reply("Você é fraco, lhe falta permissão para usar esse comando");
-            }
-
-            distube.setVolume(message, parseInt(args[0]));
-            message.channel.send("Alterou o volume! para: " + parseInt(args[0]));
+            if(hasPermission){
+                distube.setVolume(message, parseInt(args[0]));
+                message.channel.send("Alterou o volume! para: " + parseInt(args[0]));
+            }   
         }
 
         if (command == "pular") {
@@ -316,6 +314,16 @@ async function execCommands(client) {
         }
 
     });
+}
+
+async function validaPermissao(message, permission) {
+    if (!message.member.permissions.has(permission)) {
+        message.delete({ timeout: 10 });
+        message.reply("Você é fraco, lhe falta permissão para usar esse comando");
+        return false;
+    }
+        
+    return true;
 }
 
 module.exports = { execCommands };
