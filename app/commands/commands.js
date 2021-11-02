@@ -66,15 +66,25 @@ async function execCommands(client) {
 
         if (command == 'perfil') {
 
+            var infoMsg
+
+            message.channel.send("Procurando ...") // Placeholder for pinging ... 
+                .then((msg) => { // Resolve promise
+                    infoMsg = msg;
+                });
+
             const user = client.users.cache.get(message.author.id)
             var discordId = user.id;
 
             var profile = await getPerfilApi(discordId);
 
             if (profile == false) {
-                message.reply("Conta Discord Não Vinculada!");
+                message.reply("Conta Discord Não Vinculada!, Vincule sua conta em: https://waybercraft.com.br/vincular_conta_minecraft");
+                infoMsg.delete();
                 return;
             }
+
+            infoMsg.edit('Perfil Encontrado!');
 
             var formatter = new Intl.NumberFormat('en-US', {
                 style: 'currency',
