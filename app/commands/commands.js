@@ -76,7 +76,12 @@ async function execCommands(client) {
             const user = client.users.cache.get(message.author.id)
             var discordId = user.id;
 
-            var profile = await getPerfilApi(discordId);
+            try {
+                var profile = await getPerfilApi(discordId);
+            } catch (error) {
+                message.reply("Ocorreu um erro: "+error) + " Contate o suporte!";
+                infoMsg.delete();
+            }
 
             if (profile == false) {
                 message.reply("Conta Discord Não Vinculada!, Vincule sua conta em: https://waybercraft.com.br/vincular_conta_minecraft");
