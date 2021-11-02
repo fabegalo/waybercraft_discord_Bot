@@ -2,7 +2,7 @@ var { prefix } = require('../config.json');
 
 const { MessageEmbed, Permissions } = require('discord.js');
 
-const { getPerfilApi } = require("../api/api")
+const { getPerfilApi, getLogs } = require("../api/api")
 
 //const fs = require('fs');
 //const scores = require("../scores.json");
@@ -18,14 +18,6 @@ async function execCommands(client) {
     client.on('messageCreate', async message => {
 
         //message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
-
-        //Se Mensagem for do servidor WayberCraft
-        if (message.guild != null && message.guild.id == '705499998057398273') {
-            // if(message.content.match("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(?!$)|$)){4}$")){
-            //     message.delete();
-            //     message.channel.send(`<@!${message.author.id}> Você não pode enviar convites de outros servidores aqui!`);
-            // }
-        }
 
         if (message.guild != null && message.guild.id == '354099395903488001') {
             prefix = ':>';
@@ -60,6 +52,24 @@ async function execCommands(client) {
         //     }
         // }
 
+        //Se Mensagem for do servidor WayberCraft
+        if (message.guild != null && message.guild.id == '705499998057398273') {
+            // if(message.content.match("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(?!$)|$)){4}$")){
+            //     message.delete();
+            //     message.channel.send(`<@!${message.author.id}> Você não pode enviar convites de outros servidores aqui!`);
+            // }
+            if (command == 'logs') {
+                var hasPermission = validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS)
+    
+                if(hasPermission) {
+                    const user = client.users.cache.get(message.author.id)
+                    var discordId = user.id;
+    
+                    var logs = await getLogs(discordId, message.channel);
+                }
+            }
+        }
+
         if (command == 'nickname') {
 
         }
@@ -68,17 +78,37 @@ async function execCommands(client) {
 
             var infoMsg
 
-            message.channel.send("Procurando ...") // Placeholder for pinging ... 
+            var discordId;
+
+            if(args.length > 0){
+
+                var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
+
+                if(hasPermission){
+                    const user = message.mentions.users.first();
+                    if (user == undefined) {
+                        return message.reply('insira uma menção valida!');
+                    }
+                    discordId = user.id;
+                }else {
+                    const user = client.users.cache.get(message.author.id)
+                    discordId = user.id;
+                }
+
+            }else {
+                const user = client.users.cache.get(message.author.id)
+                discordId = user.id;
+            }
+
+            await message.channel.send("Procurando ...") // Placeholder for pinging ... 
                 .then((msg) => { // Resolve promise
                     infoMsg = msg;
                 });
 
-            const user = client.users.cache.get(message.author.id)
-            var discordId = user.id;
-
             try {
                 var profile = await getPerfilApi(discordId);
             } catch (error) {
+                console.log(error);
                 message.reply("Ocorreu um erro contate o suporte!");
                 infoMsg.delete();
                 return;
@@ -102,7 +132,7 @@ async function execCommands(client) {
                 title: 'Minecraft Perfil',
                 url: 'https://www.waybercraft.com.br',
                 author: {
-                    name: 'Profile',
+                    name: profile.authme.realname,
                     icon_url: 'https://www.waybercraft.com.br/images/icon_app.png',
                     url: 'https://www.waybercraft.com.br',
                 },
