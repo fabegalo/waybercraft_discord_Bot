@@ -81,6 +81,7 @@ async function execCommands(client) {
             } catch (error) {
                 message.reply("Ocorreu um erro: "+error) + " Contate o suporte!";
                 infoMsg.delete();
+                return;
             }
 
             if (profile == false) {
