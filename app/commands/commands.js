@@ -79,7 +79,7 @@ async function execCommands(client) {
             try {
                 var profile = await getPerfilApi(discordId);
             } catch (error) {
-                message.reply("Ocorreu um erro: "+error) + " Contate o suporte!";
+                message.reply("Ocorreu um erro contate o suporte!");
                 infoMsg.delete();
                 return;
             }
