@@ -274,6 +274,11 @@ async function execCommands(client) {
         }
 
         if (command == "altura") {
+
+            if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+                return message.reply("Você é fraco, lhe falta permissão para usar esse comando");
+            }
+
             distube.setVolume(message, parseInt(args[0]));
             message.channel.send("Alterou o volume! para: " + parseInt(args[0]));
         }
