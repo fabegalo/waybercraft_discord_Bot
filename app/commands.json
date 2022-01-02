@@ -16,5 +16,9 @@
             }
         ],
         "default_permission": null
+    },
+    {
+        "name": "vote",
+        "description": "Links para votar!"
     }
 ]
