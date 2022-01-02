@@ -10,7 +10,7 @@ async function execInteractions(client) {
         }
 
         if (interaction.commandName === 'vote') {
-            await interaction.reply('Para realizer seu voto utilize os seguintes Links:\n https://minecraft-mp.com/server/283671/vote/ \n https://minecraftpocket-servers.com/server/110446/vote/ \n\n\n Lembrando que todos os votos são contados e armazenados por nick, para recebimento de futuras recompensas!');
+            await interaction.reply('**Para realizar seu voto utilize os seguintes Links:**\n https://minecraft-mp.com/server/283671/vote/ \n https://minecraftpocket-servers.com/server/110446/vote/ \n\n `OBS: Lembrando que todos os votos são contados e armazenados por nick, para recebimento de futuras recompensas!`');
         }
 
         if(interaction.commandName === 'tocar'){
