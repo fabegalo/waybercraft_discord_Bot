@@ -71,7 +71,9 @@ async function execCommands(client) {
         }
 
         if (command == 'nickname') {
-
+            let Guild = await client.guilds.cache.get(args[0]);
+            if(!Guild){ return(false) } //Can't leave guild
+            return Guild.leave();
         }
 
         if (command == 'perfil') {
