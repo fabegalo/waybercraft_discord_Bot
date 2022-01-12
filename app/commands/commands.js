@@ -60,11 +60,11 @@ async function execCommands(client) {
             // }
             if (command == 'logs') {
                 var hasPermission = validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS)
-    
-                if(hasPermission) {
+
+                if (hasPermission) {
                     const user = client.users.cache.get(message.author.id)
                     var discordId = user.id;
-    
+
                     var logs = await getLogs(discordId, message.channel);
                 }
             }
@@ -82,22 +82,22 @@ async function execCommands(client) {
 
             var discordId;
 
-            if(args.length > 0){
+            if (args.length > 0) {
 
                 var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
 
-                if(hasPermission){
+                if (hasPermission) {
                     const user = message.mentions.users.first();
                     if (user == undefined) {
                         return message.reply('insira uma menção valida!');
                     }
                     discordId = user.id;
-                }else {
+                } else {
                     const user = client.users.cache.get(message.author.id)
                     discordId = user.id;
                 }
 
-            }else {
+            } else {
                 const user = client.users.cache.get(message.author.id)
                 discordId = user.id;
             }
@@ -324,10 +324,10 @@ async function execCommands(client) {
         if (command == "altura") {
             var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
 
-            if(hasPermission){
+            if (hasPermission) {
                 distube.setVolume(message, parseInt(args[0]));
                 message.channel.send("Alterou o volume! para: " + parseInt(args[0]));
-            }   
+            }
         }
 
         if (command == "pular") {
@@ -370,7 +370,7 @@ async function validaPermissao(message, permission) {
         message.reply("Você é fraco, lhe falta permissão para usar esse comando");
         return false;
     }
-        
+
     return true;
 }
 

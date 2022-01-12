@@ -20,5 +20,9 @@
     {
         "name": "vote",
         "description": "Links para votar!"
+    },
+    {
+        "name": "reload",
+        "description": "Reiniciar bot!"
     }
 ]

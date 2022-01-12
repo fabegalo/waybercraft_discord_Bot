@@ -8,16 +8,16 @@ var GUILD_ID = process.env.GUILD_ID;
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
 
-const { SlashCommandBuilder } = require('@discordjs/builders');
+//const { SlashCommandBuilder } = require('@discordjs/builders');
 
-const teste = [
-    new SlashCommandBuilder().setName('echo')
-	.setDescription('Replies with your input!')
-	.addStringOption(option =>
-		option.setName('input')
-			.setDescription('The input to echo back')
-			.setRequired(true)),
-]   .map(command => command.toJSON());
+// const teste = [
+//     new SlashCommandBuilder().setName('echo')
+// 	.setDescription('Replies with your input!')
+// 	.addStringOption(option =>
+// 		option.setName('input')
+// 			.setDescription('The input to echo back')
+// 			.setRequired(true)),
+// ]   .map(command => command.toJSON());
 
 async function initialize() {
     const commands = require("./commands.json");
@@ -26,12 +26,12 @@ async function initialize() {
     (async () => {
         try {
             console.log('Started refreshing application (/) commands.');
-    
+
             await rest.put(
                 Routes.applicationGuildCommands(APPLICATION_ID, GUILD_ID),
                 { body: commands },
             );
-    
+
             console.log('Successfully reloaded application (/) commands.');
         } catch (error) {
             console.error(error);
@@ -42,7 +42,7 @@ async function initialize() {
 async function execute() {
     const { execCommands } = require('./commands/commands');
     const { execInteractions } = require('./commands/newCommands');
-    
+
     //client.login(process.env.token); //prod
     client.login(token); //teste
 
