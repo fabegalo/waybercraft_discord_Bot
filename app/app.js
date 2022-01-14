@@ -6,7 +6,11 @@ var token = process.env.TOKEN;
 var APPLICATION_ID = process.env.APPLICATION_ID;
 var GUILD_ID = process.env.GUILD_ID;
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
+
+const { enablePermissionsManager } = require('./libs/permissionManager');
+const { execCommands } = require('./commands/commands');
+const { execInteractions } = require('./commands/newCommands');
 
 //const { SlashCommandBuilder } = require('@discordjs/builders');
 
@@ -40,11 +44,7 @@ async function initialize() {
 }
 
 async function execute() {
-    const { execCommands } = require('./commands/commands');
-    const { execInteractions } = require('./commands/newCommands');
-
-    //client.login(process.env.token); //prod
-    client.login(token); //teste
+    client.login(token);
 
     execInteractions(client);
     execCommands(client);
@@ -55,6 +55,9 @@ process.on('unhandledRejection', error => console.error('Uncaught Promise Reject
 client.once('ready', () => {
     console.log('Ready Bot Online ! WayberCraft!');
     console.log(`Logged in as ${client.user.tag}!`);
+
+    //gerenciador de permissões do app
+    enablePermissionsManager(client);
 });
 
 client.once("reconnecting", () => {

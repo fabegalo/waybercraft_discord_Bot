@@ -6,14 +6,14 @@ const APP_URL = process.env.APP_URL;
 
 async function getToken() {
 
-    const body = {'email': username, 'password': password};
+    const body = { 'email': username, 'password': password };
 
-    const response = await fetch(APP_URL+'/api/auth/login', {
+    const response = await fetch(APP_URL + '/api/auth/login', {
         method: 'post',
         body: JSON.stringify(body),
-        headers: {'Content-Type': 'application/json'}
+        headers: { 'Content-Type': 'application/json' }
     });
-    
+
     const data = await response.json() ?? null;
     return data['access_token'];
 }
@@ -22,17 +22,17 @@ async function getPerfilApi(discordId) {
 
     var token = await getToken();
 
-    const response = await fetch(APP_URL+'/api/v1/perfil/'+discordId, {
+    const response = await fetch(APP_URL + '/api/v1/perfil/' + discordId, {
         method: 'get',
         //body: JSON.stringify(body),
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer '+token}
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
     });
 
     const data = await response.json() ?? null;
 
-    if(response.status == 500){
+    if (response.status == 500) {
         return false
-    }else {
+    } else {
         return data;
     }
 }
@@ -41,17 +41,37 @@ async function getMinecraftForDiscordID(discordId) {
 
     var token = await getToken();
 
-    const response = await fetch(APP_URL+'/api/v1/get/minecraft/name/'+discordId, {
+    const response = await fetch(APP_URL + '/api/v1/get/minecraft/name/' + discordId, {
         method: 'get',
         //body: JSON.stringify(body),
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer '+token}
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
     });
 
     const data = await response.json() ?? null;
 
-    if(response.status == 500){
+    if (response.status == 500) {
         return false
-    }else {
+    } else {
+        return data;
+    }
+}
+
+async function getCargos(cargo) {
+    var token = await getToken();
+
+    const response = await fetch(APP_URL + '/api/v1/cargo/' + cargo, {
+        method: 'get',
+        //body: JSON.stringify(body),
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
+    });
+
+    const data = await response.json() ?? null;
+
+    //console.log(data);
+
+    if (response.status == 500) {
+        return false
+    } else {
         return data;
     }
 }
@@ -62,23 +82,23 @@ async function getLogs(discordId, channel) {
 
     var typeLog = channel.name
 
-    console.log(typeLog);
+    //console.log(typeLog);
 
-    const response = await fetch(APP_URL+'/api/v1/logs/'+discordId+"/"+typeLog, {
+    const response = await fetch(APP_URL + '/api/v1/logs/' + discordId + "/" + typeLog, {
         method: 'get',
         //body: JSON.stringify(body),
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer '+token}
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
     });
 
     const data = await response.json() ?? null;
 
-    console.log(data);
+    //console.log(data);
 
-    if(response.status == 500){
+    if (response.status == 500) {
         return false
-    }else {
+    } else {
         return data;
     }
 }
 
-module.exports = { getPerfilApi, getLogs };
+module.exports = { getPerfilApi, getLogs, getCargos };
