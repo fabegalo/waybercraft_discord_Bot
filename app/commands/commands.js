@@ -8,6 +8,9 @@ const { getPerfilApi, getLogs } = require("../api/api")
 //const scores = require("../scores.json");
 //typeof scores; // object
 
+const { messageList } = require('../warning_messages.json')
+const messages = messageList.messages
+
 const { badword } = require('../bad_words.json');
 const words = badword.split(' ');
 
@@ -28,8 +31,9 @@ async function execCommands(client) {
         if (!message.author.bot) {
             for (x = 0; x < words.length; x++) {
                 if (message.content.match('\\b' + words[x] + '\\b', 'gi') != null) {
-                    message.delete({ timeout: 10 });
-                    message.channel.send(`O: ${message.author.username}\n <@!${message.author.id}> meça suas palavras parça`);
+                    message.delete({ timeout: 5 });
+                    randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                    message.channel.send(randomMessage);
                 }
             }
         }
