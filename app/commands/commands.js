@@ -8,8 +8,7 @@ const { getPerfilApi, getLogs } = require("../api/api")
 //const scores = require("../scores.json");
 //typeof scores; // object
 
-const { messageList } = require('../warning_messages.json')
-const messages = messageList.messages
+const { messages } = require('../warning_messages.json')
 
 const { badword } = require('../bad_words.json');
 const words = badword.split(' ');
