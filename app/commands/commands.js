@@ -1,14 +1,17 @@
 const { MessageEmbed, Permissions } = require('discord.js');
 
-const { getPerfilApi, getLogs } = require("../api/api")
+const { getPerfilApi, getLogs } = require("../api/api");
 
 const { distube } = require("../libs/distube");
 
+const { Servers, Embed, About } = require('../config.json');
+    
+const { Words } = require('../badWords.json');
+const Badword = Words.toLowerCase().split(' ');
 
-const { badword } = require('../bad_words.json');
-const words = badword.split(' ');
+const { Commands } = require('../commands.json');
 
-var { Prefix } = require('../config.json');
+const { Messages } = require('../warnMessages.json');
 
 
 //const fs = require('fs');
@@ -20,11 +23,15 @@ async function execCommands(client) {
 
     client.on('messageCreate', async message => {
 
-        if (message.guild != null && message.guild.id == '354099395903488001') {
-            Prefix = ':>';
+        const ServerID = message.guild.id // Identificação automatica de servidor.
+
+
+        if (ServerID in Servers['ID']) {
+            var Prefix = Servers['ID'][ServerID]['Prefix'] // Identificação automatica de prefixo.
         } else {
-            Prefix = '!';
+            var Prefix = "!"
         }
+
 
         if (!message.author.bot) {
             for (x = 0; x < words.length; x++) {
@@ -73,7 +80,7 @@ async function execCommands(client) {
 
 
         // Músicas.
-        if (command == "toca" || command == "tocar") {
+        if (["tocar", "toca", "search", "s"].includes(command)) {
             if (!args.length) {
                 return message.channel.send(`Faltam Argumentos , ${message.author}!`);
             }
@@ -83,16 +90,16 @@ async function execCommands(client) {
             }
         }
 
-        if (command == "parar") {
+        if (["parar", "sair", "desconectar", "stop", "quit"].includes(command)) {
             distube.stop(message);
             message.channel.send("Parou a música!");
         }
 
-        if (command == "pular") {
+        if (["pular", "proxima", "next", "skip", "nextSong", "skipSong"].includes(command)) {
             distube.skip(message);
         }
 
-        if (command == "lista") {
+        if (["lista", "musicas", "fila", "queue"].includes(command)) {
             let queue = distube.getQueue(message);
 
             if (queue == undefined) {
@@ -105,7 +112,7 @@ async function execCommands(client) {
             ).slice(0, 10).join("\n"));
         }
 
-        if (command == "autoplay") {
+        if (["autoplay", "recomendar", "recomendações"].includes(command)) {
 
             let queue = distube.getQueue(message);
 
@@ -123,18 +130,18 @@ async function execCommands(client) {
         }
 
         /// Avançados.
-        if (command == 'filtros') {
+        if (["repeat", "repetir", "loop"].includes(command)) {
             message.channel.send("Filtro de fila atual:: " + ("Off" + '\n Filtros Disponiveis: ' + '\n 3d' + '\n bassboost' + '\n karaoke' + '\n nightcore' + '\n vaporwave'));
         }
 
-        if ([`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`].includes(command)) {
+        if (["3d", "bassboost", "echo", "karaoke", "nightcore", "vaporwave"].includes(command)) {
             let filter = distube.setFilter(message, command);
             message.channel.send("Filtro de fila atual: " + (filter || "Off"));
         }
 
 
         // Diversos
-        if (command == 'perfil') {
+        if (["perfil", "minecraftinfo", "mineinfo", "miinfo"].includes(command)) {
 
             var infoMsg
 
@@ -239,14 +246,14 @@ async function execCommands(client) {
             message.channel.send({ embeds: [profileEmbed] })
         }
 
-        if (command == "ping") { // Check if message is "!ping"
+        if (['ping', 'latency', 'temporesposta'].includes(command)) { // Check if message is "!ping"
             message.channel.send("Pinging ...") // Placeholder for pinging ... 
                 .then((msg) => { // Resolve promise
                     msg.edit("Ping: " + (Date.now() - msg.createdTimestamp)) // Edits message with current timestamp minus timestamp of message
                 });
         }
 
-        if (command == 'users') {
+        if (["users", "usuarios", "usuários"].includes(command)) {
             var list = [];
             var count = 0;
             message.guild.members.cache.each(function () {
@@ -259,7 +266,7 @@ async function execCommands(client) {
 
 
         // Moderação
-        if (command == 'limpar') {
+        if (['limpar', 'clear', 'clearchat'].includes(command)) {
 
             if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
                 return message.reply("Você é fraco, lhe falta permissão para Gerenciar Mensagens para usar esse comando");
@@ -292,7 +299,7 @@ async function execCommands(client) {
             }
         }
 
-        if (command == "altura") {
+        if (["altura", "volume"].includes(command)) {
             var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
 
             if (hasPermission) {
@@ -301,7 +308,7 @@ async function execCommands(client) {
             }
         }
 
-        if (command == 'logs') {
+        if (["logs", "log"].includes(command)) {
             if (message.guild != null && message.guild.id == '705499998057398273') {
                 var hasPermission = validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS)
 
@@ -316,7 +323,7 @@ async function execCommands(client) {
 
 
         // Misc
-        if (command == 'comandos') {
+        if (["comandos", "ajuda", "help"].includes(command)) {
             const user = client.users.cache.get(message.author.id)
             user.send('Olá, eu sou o waynerzito estou aqui para te ajudar \n' + 'Aqui esta a lista de comandos: \n' + ' \n !toca {url} \n !users \n !parar \n !sendTo {@mention} {msg here}');
         }
