@@ -1,16 +1,25 @@
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, Permissions } = require('discord.js');
 
-var token = process.env.TOKEN;
+// const RPC = require("discord-rpc");
+// const RPCClient = new RPC.Client({ transport: 'websocket' });
+
+var TOKEN = process.env.TOKEN;
 var APPLICATION_ID = process.env.APPLICATION_ID;
 var GUILD_ID = process.env.GUILD_ID;
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
+const client = new Client({
+    intents:[
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_MEMBERS,
+        Intents.FLAGS.DIRECT_MESSAGES,
+        Intents.FLAGS.GUILD_VOICE_STATES]});
 
 const { enablePermissionsManager } = require('./libs/permissionManager');
 const { execCommands } = require('./commands/commands');
-const { execInteractions } = require('./commands/newCommands');
+const { execInteractions } = require('./commands/slashCommands');
 
 //const { SlashCommandBuilder } = require('@discordjs/builders');
 
@@ -24,8 +33,8 @@ const { execInteractions } = require('./commands/newCommands');
 // ]   .map(command => command.toJSON());
 
 async function initialize() {
-    const commands = require("./commands.json");
-    const rest = new REST({ version: '9' }).setToken(token);
+    const commands = require("./slashCommands.json");
+    const rest = new REST({ version: '9' }).setToken(TOKEN);
 
     (async () => {
         try {
@@ -44,21 +53,42 @@ async function initialize() {
 }
 
 async function execute() {
-    client.login(token);
+    client.login(TOKEN);
 
     execInteractions(client);
     execCommands(client);
 }
 
+
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error));
 
 client.once('ready', () => {
-    console.log('Ready Bot Online ! WayberCraft!');
+    console.log('Ready, Bot is Now Online! WayBerCraft!');
     console.log(`Logged in as ${client.user.tag}!`);
 
     //gerenciador de permissões do app
     enablePermissionsManager(client);
 });
+// async function rpcInitialize(){
+//     RPCClient.login({ clientId : "" }).catch(console.error);
+//     RPCClient.on('ready', () => {
+//         console.log('Estamos jogando!')
+//         RPCClient.request('SET_ACTIVITY', {
+//         pid: process.pid,
+//         activity: {
+//             state: "Entre no meu [Discord]()!",
+//             details: "Minecraft em WayberCraft Server",
+//         assets: {
+//                  large_image: "logo",
+//                  large_text: "WayberZito"},
+//         buttons : [
+//             {label : "Jogue no Java!", url : "https://minecraft-mp.com/server-s283671/"},
+//             {label : "Jogue no Bedrock!", url : "minecraft://?addExternalServer=WayBerCraft|br-plus-5.enxadahost.com:10005"}]
+//         }
+//         })
+//     }
+//     )
+// }
 
 client.once("reconnecting", () => {
     console.log("Reconnecting!");
@@ -67,5 +97,5 @@ client.once("reconnecting", () => {
 client.once("disconnect", () => {
     console.log("Disconnect!");
 });
-
 module.exports = { initialize, execute };
+
