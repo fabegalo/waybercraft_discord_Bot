@@ -1,0 +1,43 @@
+[
+    {
+        "name": "ping",
+        "description": "Replies with Pong!"
+    },
+    {
+        "name": "tocar",
+        "description": "Tocar uma musica :D !",
+        "options": [
+            {
+                "type": 3,
+                "name": "search",
+                "description": "Nome da pesquisa",
+                "required": true,
+                "choices": null
+            }
+        ],
+        "default_permission": true
+    },
+    {
+        "name": "vote",
+        "description": "Links para votar!"
+    },
+    {
+        "name": "reload",
+        "description": "Reiniciar bot!",
+        "default_permission": false
+    },
+    {
+        "name": "update",
+        "description": "Atualizar um cargo !",
+        "options": [
+            {
+                "type": 3,
+                "name": "cargo",
+                "description": "Nome do cargo",
+                "required": true,
+                "choices": null
+            }
+        ],
+        "default_permission": false
+    }
+]
