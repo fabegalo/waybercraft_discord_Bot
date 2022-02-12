@@ -13,7 +13,9 @@ const words = badword.split(' ');
 
 const { distube } = require("../libs/distube");
 
+
 async function execCommands(client) {
+
 
 	client.on('messageCreate', async message => {
 
