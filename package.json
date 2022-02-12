@@ -17,6 +17,7 @@
     "@discordjs/voice": "^0.6.0",
     "ansi-regex": ">=5.0.1",
     "discord-api-types": "^0.23.1",
+    "discord-rpc": "^4.0.1",
     "discord.js": "^13.2.0",
     "distube": "^3.0.0-beta.39",
     "dotenv": "^10.0.0",
