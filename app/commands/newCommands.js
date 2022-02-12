@@ -40,29 +40,32 @@ async function execInteractions(client) {
             await interaction.reply("Atualizando...");
             var hasPermission = await validaPermissao(interaction, Permissions.FLAGS.MANAGE_CHANNELS);
             if (hasPermission) {
-                var cargo = interaction.options.get("cargo").value;
+                try {
+                    var cargo = interaction.options.get("cargo").value;
 
-                removidos = await removeAllMembersFromRole(client, cargo);
+                    removidos = await removeAllMembersFromRole(client, cargo);
 
-                var users = await getCargos(cargo);
+                    var users = await getCargos(cargo);
 
-                var names = '\n';
+                    var names = '\n';
 
-                users.map((user, index) => {
-                    addCargo(client, cargo, user.discord_id);
-                    names = names + '   +   ' + user.username + '\n';
-                });
+                    users.map((user, index) => {
+                        addCargo(client, cargo, user.discord_id);
+                        names = names + '   +   ' + user.username + '\n';
+                    });
 
-                var namesRemovidos = '\n';
+                    var namesRemovidos = '\n';
 
-                removidos.map((user, index) => {
-                    namesRemovidos = namesRemovidos + '   -   ' + user.user.username + '\n';
-                });
+                    removidos.map((user, index) => {
+                        namesRemovidos = namesRemovidos + '   -   ' + user.user.username + '\n';
+                    });
 
-                await interaction.editReply(`Atualização do Cargo => ${cargo} \n\n Adicionado: ${names} \n Removido: ${namesRemovidos}`);
+                    await interaction.editReply(`Atualização do Cargo => ${cargo} \n\n Adicionado: ${names} \n Removido: ${namesRemovidos}`);
+                } catch (error) {
+                    await interaction.editReply(`ERRO: ${error}`)
+                }
             }
         }
-
     });
 }
 
@@ -85,8 +88,6 @@ async function addCargo(client, cargo, userId) {
 
     users.map((user, index) => {
         if (user.id == userId) {
-            console.log(user.user.username);
-            console.log('ACHEI!!!')
             user.roles.add(role);
         }
     })

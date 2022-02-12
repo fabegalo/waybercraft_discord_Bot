@@ -8,8 +8,6 @@ const { getPerfilApi, getLogs } = require("../api/api")
 //const scores = require("../scores.json");
 //typeof scores; // object
 
-const { messages } = require('../warning_messages.json')
-
 const { badword } = require('../bad_words.json');
 const words = badword.split(' ');
 
@@ -30,9 +28,32 @@ async function execCommands(client) {
         if (!message.author.bot) {
             for (x = 0; x < words.length; x++) {
                 if (message.content.match('\\b' + words[x] + '\\b', 'gi') != null) {
-                    message.delete({ timeout: 5 });
-                    randomMessage = messages[Math.floor(Math.random() * messages.length)];
-                    message.channel.send(randomMessage);
+                    message.delete({ timeout: 10 });
+                    message.channel.send(`O: ${message.author.username}\n <@!${message.author.id}> meça suas palavras parça`);
+                }
+            }
+        }
+
+        if (message.mentions.has(client.user.id)) {
+            if (message.type == 'REPLY') {
+
+                var roleId = '829061318371573772';
+                if (await validaPermissaoCargo(message, roleId)) {
+                    var msg = await message.channel.messages.fetch(message.reference.messageId);
+
+                    var textChannel = message.content.slice(prefix.length).trim().split(' ')[1];
+
+                    var messageTitle = message.content.slice(prefix.length).trim().split(' ')[2];
+                    
+
+                    if (textChannel == undefined) {
+                        message.reply('Canal de texto Não encontrado !');
+                    } else {
+                        var channelID = textChannel.replace(/\D/g, '');
+                        const channel = client.channels.cache.find(channel => channel.id === channelID);
+                        channel.send(msg.content);
+                        message.channel.send('Mensagem enviada com sucesso para canal ' + textChannel + ' ! : ```' + msg.content + '``` ');
+                    }
                 }
             }
         }
@@ -186,7 +207,7 @@ async function execCommands(client) {
 
         if (command == 'limpar') {
 
-            if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+            if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
                 return message.reply("Você é fraco, lhe falta permissão para Gerenciar Mensagens para usar esse comando");
             }
 
@@ -369,8 +390,20 @@ async function execCommands(client) {
 
 async function validaPermissao(message, permission) {
     if (!message.member.permissions.has(permission)) {
+        await message.reply("Você é fraco, lhe falta permissão para usar esse comando");
         message.delete({ timeout: 10 });
-        message.reply("Você é fraco, lhe falta permissão para usar esse comando");
+        return false;
+    }
+
+    return true;
+}
+
+async function validaPermissaoCargo(message, roleId) {
+    //let role = await server.roles.cache.find(role => role.id === roleId);
+
+    if (!await message.member.roles.cache.has(roleId)) {
+        await message.reply("Você é fraco, lhe falta cargo para usar esse comando");
+        message.delete({ timeout: 10 });
         return false;
     }
 
