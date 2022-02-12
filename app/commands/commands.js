@@ -33,6 +33,141 @@ async function execCommands(client) {
 		}
 
 
+		// Funções para auxiliar nas Embeds.
+		function embTitle(Name, Permission) {
+			if (typeof(Embed['Title'][Name]) == 'object') {
+				var Title = Embed['Title'][Name].join('\n')
+					.replaceAll('<ServerPrefix>', Prefix)
+					.replaceAll('<SupportPrefix>', Servers["ID"]["705499998057398273"]["Prefix"])
+					.replaceAll('<UserID>', message.author.id)
+					.replaceAll('<WBServer>', About['Server']['Guild'])
+					.replaceAll('<JavaURL>', About['Server']['JavaURL'])
+					.replaceAll('<BedrockURL>', About['Server']['BedrockURL'])
+					if(Permission != undefined) {
+						var Title = Title.replaceAll('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+					}
+				}
+
+			if (typeof(Embed['Title'][Name]) == 'string') {
+				var Title = Embed['Title'][Name]
+					.replace("<ServerPrefix>", Prefix)
+					.replace("<SupportPrefix>", Servers["ID"]["705499998057398273"]["Prefix"])
+					.replace('<UserID>', message.author.id)
+					.replace('<WBServer>', About['Server']['Guild'])
+					.replace('<JavaURL>', About['Server']['JavaURL'])
+					.replace('<BedrockURL>', About['Server']['BedrockURL'])
+					if(Permission != undefined) {
+						var Title = Title.replace('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+					}
+				}
+			return Title;
+		}
+
+		function embDescription(Name, Permission) {
+			if (typeof(Embed['Description'][Name]) == 'object') {
+				var Description = Embed['Description'][Name].join('\n')
+					.replaceAll('<ServerPrefix>', Prefix)
+					.replaceAll("<SupportPrefix>", Servers["ID"]["705499998057398273"]["Prefix"])
+					.replaceAll('<UserID>', message.author.id)
+					.replaceAll('<WBServer>', About['Server']['Guild'])
+					.replaceAll('<JavaURL>', About['Server']['JavaURL'])
+					.replaceAll('<BedrockURL>', About['Server']['BedrockURL'])
+					if(Permission != undefined) {
+						var Description = Description.replaceAll('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+					}
+				}
+
+			if (typeof(Embed['Description'][Name]) == 'string') {
+				var Description = Embed['Description'][Name]
+					.replace('<ServerPrefix>', Prefix)
+					.replace("<SupportPrefix>", Servers["ID"]["705499998057398273"]["Prefix"])
+					.replace('<UserID>', message.author.id)
+					.replace('<WBServer>', About['Server']['Guild'])
+					.replace('<JavaURL>', About['Server']['JavaURL'])
+					.replace('<BedrockURL>', About['Server']['BedrockURL'])
+					if(Permission != undefined) {
+						var Description = Description.replace('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+					}
+				}
+			return Description;
+		}
+
+		function embFooter(Name, Permission) {
+			if (typeof(Embed['Footer'][Name]) == 'object') {
+				var Footer = Embed['Footer'][Name].join('\n')
+					.replaceAll('<ServerPrefix>', Prefix)
+					.replaceAll("<SupportPrefix>", Servers["ID"]["705499998057398273"]["Prefix"])
+					.replaceAll('<Powered>', About['Powered'])
+					.replaceAll('<UserID>', message.author.id)
+					.replaceAll('<WBServer>', About['Server']['Guild'])
+					.replaceAll('<JavaURL>', About['Server']['JavaURL'])
+					.replaceAll('<BedrockURL>', About['Server']['BedrockURL'])
+					.replaceAll('<AnnouncerID>', message.author.username)
+					if(Permission != undefined) {
+						var Footer = Footer.replaceAll('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+					}
+				}
+
+			if (typeof(Embed['Footer'][Name]) == 'string') {
+				var Footer = Embed['Footer'][Name]
+					.replace('<ServerPrefix>', Prefix)
+					.replace("<SupportPrefix>", Servers["ID"]["705499998057398273"]["Prefix"])
+					.replace('<Powered>', About['Powered'])
+					.replace('<UserID>', message.author.id)
+					.replace('<WBServer>', About['Server']['Guild'])
+					.replace('<JavaURL>', About['Server']['JavaURL'])
+					.replace('<BedrockURL>', About['Server']['BedrockURL'])
+					.replace('<AnnouncerID>', message.author.username)
+					if(Permission != undefined) {
+						var Footer = Footer.replace('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+					}
+				}
+			return Footer;
+		}
+
+		function replaceArg(Anything) {
+			var Out = Anything.replaceAll('<ServerPrefix>', Prefix)
+				.replaceAll("<SupportPrefix>", Servers["ID"]["705499998057398273"]["Prefix"])
+				.replaceAll('<UserID>', message.author.id)
+				.replaceAll('<WBServer>', About['Server']['Guild'])
+				.replaceAll('<JavaURL>', About['Server']['JavaURL'])
+				.replaceAll('<BedrockURL>', About['Server']['BedrockURL'])
+			return Out;
+		}
+
+
+		// Funções para gerenciar as permissões e cargos.
+		async function validaPermissao(message, permission) {
+			if (!message.member.permissions.has(permission)) {
+				const validPermissionEmbed = new MessageEmbed()
+					.setTitle(embTitle("validPermission", permission))
+					.setDescription(embDescription("validPermission", permission))
+					.setFooter({text: embFooter('UserID'), iconURL: About['Server']['IconURL']})
+					.setColor(Embed["Colors"]["Blocked"])
+					.setTimestamp()
+
+				message.reply({embeds: [validPermissionEmbed] })
+				setTimeout(() => message.delete(), 1800)
+				return false;}
+			return true;
+		}
+		
+		async function validaPermissaoCargo(message, roleId) {
+			//let role = await server.roles.cache.find(role => role.id === roleId);
+			if (!await message.member.roles.cache.has(roleId)) {
+				const validRoleEmbed = new MessageEmbed()
+					.setTitle(embTitle('validRole'))
+					.setDescription(embDescription('validRole').replace('<Roles>', roleId))
+					.setColor(Embed["Colors"]["Blocked"])
+					.setFooter({text: embFooter('UserID'), iconURL: About['Server']['IconURL']})
+					.setTimestamp()
+				await message.reply({embeds: [validRoleEmbed] })
+				setTimeout(() => message.delete(), 1800)
+				return false;
+			}
+			return true;
+		}
+
 		// Condição para tratar as mensagens dos usuarios e verificar se há palavrões
 		if (!message.author.bot) {
 			//isBadWord = false
@@ -338,30 +473,6 @@ async function execCommands(client) {
 
 
 	});
-}
-
-
-
-async function validaPermissao(message, permission) {
-	if (!message.member.permissions.has(permission)) {
-		await message.reply("Você é fraco, lhe falta permissão para usar esse comando");
-		message.delete({ timeout: 10 });
-		return false;
-	}
-
-	return true;
-}
-
-async function validaPermissaoCargo(message, roleId) {
-	//let role = await server.roles.cache.find(role => role.id === roleId);
-
-	if (!await message.member.roles.cache.has(roleId)) {
-		await message.reply("Você é fraco, lhe falta cargo para usar esse comando");
-		message.delete({ timeout: 10 });
-		return false;
-	}
-
-	return true;
 }
 
 module.exports = { execCommands };
