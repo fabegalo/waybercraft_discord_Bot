@@ -1,28 +1,29 @@
-var { prefix } = require('../config.json');
-
 const { MessageEmbed, Permissions } = require('discord.js');
 
 const { getPerfilApi, getLogs } = require("../api/api")
+
+const { distube } = require("../libs/distube");
+
+
+const { badword } = require('../bad_words.json');
+const words = badword.split(' ');
+
+var { Prefix } = require('../config.json');
+
 
 //const fs = require('fs');
 //const scores = require("../scores.json");
 //typeof scores; // object
 
-const { badword } = require('../bad_words.json');
-const words = badword.split(' ');
-
-const { distube } = require("../libs/distube");
 
 async function execCommands(client) {
 
     client.on('messageCreate', async message => {
 
-        //message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
-
         if (message.guild != null && message.guild.id == '354099395903488001') {
-            prefix = ':>';
+            Prefix = ':>';
         } else {
-            prefix = '!';
+            Prefix = '!';
         }
 
         if (!message.author.bot) {
@@ -41,7 +42,10 @@ async function execCommands(client) {
                 if (await validaPermissaoCargo(message, roleId)) {
                     var msg = await message.channel.messages.fetch(message.reference.messageId);
 
-                    var textChannel = message.content.slice(prefix.length).trim().split(' ')[1];
+                    var textChannel = message.content.slice(Prefix.length).trim().split(' ')[1];
+
+                    var messageTitle = message.content.slice(Prefix.length).trim().split(' ')[2];
+                    
 
                     if (textChannel == undefined) {
                         message.reply('Canal de texto Não encontrado !');
@@ -56,47 +60,80 @@ async function execCommands(client) {
         }
 
         //-----------------Seção para tratar comandos dos usuarios------------------------------------------------------------------
-        if (!message.content.startsWith(prefix) || message.author.bot) return;
+        // ?: ↓↓↓
+        // One line-break = New Command.
+        // Two line-break = New Category.
+        // 3 bars (/) = SubCategory
 
-        const args = message.content.slice(prefix.length).trim().split(' ');
+
+        const args = message.content.slice(Prefix.length).trim().split(' ');
         const command = args.shift().toLowerCase();
 
-        // if(command == 'send'){
+        if (!message.content.startsWith(Prefix) || message.author.bot) return;
 
-        //     if (!args.length) {
-        //         return message.channel.send(`Faltam Argumentos , ${message.author}!`);
-        //     }else{
-        //         const args = message.content.slice(prefix.length).trim().split('send');
-        //         message.guild.members.cache.each(
-        //             guild => guild.user.send(args)
-        //         );
-        //     }
-        // }
 
-        //Se Mensagem for do servidor WayberCraft
-        if (message.guild != null && message.guild.id == '705499998057398273') {
-            // if(message.content.match("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(?!$)|$)){4}$")){
-            //     message.delete();
-            //     message.channel.send(`<@!${message.author.id}> Você não pode enviar convites de outros servidores aqui!`);
-            // }
-            if (command == 'logs') {
-                var hasPermission = validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS)
-
-                if (hasPermission) {
-                    const user = client.users.cache.get(message.author.id)
-                    var discordId = user.id;
-
-                    var logs = await getLogs(discordId, message.channel);
-                }
+        // Músicas.
+        if (command == "toca" || command == "tocar") {
+            if (!args.length) {
+                return message.channel.send(`Faltam Argumentos , ${message.author}!`);
+            }
+            else {
+                distube.play(message, args.join(" "));
+                return;
             }
         }
 
-        // if (command == 'nickname') {
-        //     let Guild = await client.guilds.cache.get(args[0]);
-        //     if(!Guild){ return(false) } //Can't leave guild
-        //     return Guild.leave();
-        // }
+        if (command == "parar") {
+            distube.stop(message);
+            message.channel.send("Parou a música!");
+        }
 
+        if (command == "pular") {
+            distube.skip(message);
+        }
+
+        if (command == "lista") {
+            let queue = distube.getQueue(message);
+
+            if (queue == undefined) {
+                message.channel.send('Lista Vazia!');
+                return;
+            }
+
+            message.channel.send('Fila atual:\n' + queue.songs.map((song, id) =>
+                `**${id + 1}**. ${song.name} - \`${song.formattedDuration}\``
+            ).slice(0, 10).join("\n"));
+        }
+
+        if (command == "autoplay") {
+
+            let queue = distube.getQueue(message);
+
+            if (queue == undefined) {
+                message.channel.send('Nenhuma Musica Tocando!');
+                return;
+            }
+
+            let mode = distube.toggleAutoplay(message);
+            message.channel.send("Set autoplay mode to `" + (mode ? "On" : "Off") + "`");
+        }
+
+        if (["repeat", "loop"].includes(command)) {
+            distube.setRepeatMode(message, parseInt(args[0]));
+        }
+
+        /// Avançados.
+        if (command == 'filtros') {
+            message.channel.send("Filtro de fila atual:: " + ("Off" + '\n Filtros Disponiveis: ' + '\n 3d' + '\n bassboost' + '\n karaoke' + '\n nightcore' + '\n vaporwave'));
+        }
+
+        if ([`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`].includes(command)) {
+            let filter = distube.setFilter(message, command);
+            message.channel.send("Filtro de fila atual: " + (filter || "Off"));
+        }
+
+
+        // Diversos
         if (command == 'perfil') {
 
             var infoMsg
@@ -202,6 +239,26 @@ async function execCommands(client) {
             message.channel.send({ embeds: [profileEmbed] })
         }
 
+        if (command == "ping") { // Check if message is "!ping"
+            message.channel.send("Pinging ...") // Placeholder for pinging ... 
+                .then((msg) => { // Resolve promise
+                    msg.edit("Ping: " + (Date.now() - msg.createdTimestamp)) // Edits message with current timestamp minus timestamp of message
+                });
+        }
+
+        if (command == 'users') {
+            var list = [];
+            var count = 0;
+            message.guild.members.cache.each(function () {
+                guild => list += guild.user.username + ' \n'
+                count++;
+            });
+            message.channel.send('Quantidade: ' + count + '\n' + list);
+            message.channel.send(`Online: ${client.guilds.cache.size}`);
+        }
+
+
+        // Moderação
         if (command == 'limpar') {
 
             if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
@@ -235,113 +292,6 @@ async function execCommands(client) {
             }
         }
 
-        if (command == 'avatar') {
-            const args = message.content.slice(prefix.length).trim().split('avatar');
-            const user = client.users.cache.get(message.author.id)
-
-            const embed = new MessageEmbed()
-                .setTitle('WayberCraft!')
-                .setAuthor("Info", "https://waybercraft.com.br/images/icon_app.png")
-                .setDescription("TESTE")
-                .setThumbnail("https://waybercraft.com.br/images/icon_app.png")
-                .setImage("https://waybercraft.com.br/images/header.png")
-                .setFooter("by fabegalo :D")
-                //.addField("Pontos: ", scores[message.author.tag] == undefined ? 0 : scores[message.author.tag].money)
-                //.addField("Membros: ", message.guild.memberCount ?? "teste")
-                .setColor('ORANGE')
-                .setTimestamp()
-
-            message.channel.send({ embeds: [embed] })
-        }
-
-        if (command == "ping") { // Check if message is "!ping"
-            message.channel.send("Pinging ...") // Placeholder for pinging ... 
-                .then((msg) => { // Resolve promise
-                    msg.edit("Ping: " + (Date.now() - msg.createdTimestamp)) // Edits message with current timestamp minus timestamp of message
-                });
-        }
-
-        // if (!message.author.bot && command != "pontos") {
-        //     if (!scores[message.author.tag]) {
-        //         scores[message.author.tag] = {
-        //             money: 0
-        //         };
-        //     }
-
-        //     scores[message.author.tag].money += 25;
-        //     fs.writeFileSync("../scores.json", JSON.stringify(scores));
-        // }
-
-        // if (command == "pontos") {
-
-        //     if (!scores[message.author.tag]) {
-        //         scores[message.author.tag] = {
-        //             money: 0
-        //         };
-        //     }
-
-        //     message.reply(`Seus pontos é: ${scores[message.author.tag].money}`);
-
-        //     fs.writeFileSync("../scores.json", JSON.stringify(scores));
-        // }
-
-        if (command == 'sendto') {
-            if (!args.length) {
-                return message.channel.send(`Faltam Argumentos , ${message.author}!`);
-            } else {
-                const user = message.mentions.users.first();
-                if (user == undefined) {
-                    return message.reply('insira uma menção valida!');
-                }
-                message.delete({ timeout: 10 });
-                const args = message.content.slice(prefix.length).trim().split(`sendTo <@!${user.id}>`);
-                user.send(args);
-            }
-        }
-
-        if (command == 'users') {
-            var list = [];
-            var count = 0;
-            message.guild.members.cache.each(function () {
-                guild => list += guild.user.username + ' \n'
-                count++;
-            });
-            message.channel.send('Quantidade: ' + count + '\n' + list);
-            message.channel.send(`Online: ${client.guilds.cache.size}`);
-        }
-
-        if (command == "toca" || command == "tocar") {
-            if (!args.length) {
-                return message.channel.send(`Faltam Argumentos , ${message.author}!`);
-            }
-            else {
-                distube.play(message, args.join(" "));
-                return;
-            }
-        }
-
-        if (command == "autoplay") {
-
-            let queue = distube.getQueue(message);
-
-            if (queue == undefined) {
-                message.channel.send('Nenhuma Musica Tocando!');
-                return;
-            }
-
-            let mode = distube.toggleAutoplay(message);
-            message.channel.send("Set autoplay mode to `" + (mode ? "On" : "Off") + "`");
-        }
-
-        if (["repeat", "loop"].includes(command)) {
-            distube.setRepeatMode(message, parseInt(args[0]));
-        }
-
-        if (command == "parar") {
-            distube.stop(message);
-            message.channel.send("Parou a música!");
-        }
-
         if (command == "altura") {
             var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
 
@@ -351,39 +301,32 @@ async function execCommands(client) {
             }
         }
 
-        if (command == "pular") {
-            distube.skip(message);
-        }
+        if (command == 'logs') {
+            if (message.guild != null && message.guild.id == '705499998057398273') {
+                var hasPermission = validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS)
 
-        if (command == "lista") {
-            let queue = distube.getQueue(message);
+                if (hasPermission) {
+                    const user = client.users.cache.get(message.author.id)
+                    var discordId = user.id;
 
-            if (queue == undefined) {
-                message.channel.send('Lista Vazia!');
-                return;
+                    var logs = await getLogs(discordId, message.channel);
+                }
             }
-
-            message.channel.send('Fila atual:\n' + queue.songs.map((song, id) =>
-                `**${id + 1}**. ${song.name} - \`${song.formattedDuration}\``
-            ).slice(0, 10).join("\n"));
         }
 
-        if ([`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`].includes(command)) {
-            let filter = distube.setFilter(message, command);
-            message.channel.send("Filtro de fila atual: " + (filter || "Off"));
-        }
 
+        // Misc
         if (command == 'comandos') {
             const user = client.users.cache.get(message.author.id)
             user.send('Olá, eu sou o waynerzito estou aqui para te ajudar \n' + 'Aqui esta a lista de comandos: \n' + ' \n !toca {url} \n !users \n !parar \n !sendTo {@mention} {msg here}');
         }
 
-        if (command == 'filtros') {
-            message.channel.send("Filtro de fila atual:: " + ("Off" + '\n Filtros Disponiveis: ' + '\n 3d' + '\n bassboost' + '\n karaoke' + '\n nightcore' + '\n vaporwave'));
-        }
+
 
     });
 }
+
+
 
 async function validaPermissao(message, permission) {
     if (!message.member.permissions.has(permission)) {
@@ -408,3 +351,79 @@ async function validaPermissaoCargo(message, roleId) {
 }
 
 module.exports = { execCommands };
+
+// Other things, commands in tests or that were left out or unusable
+        // if(command == 'send'){
+
+        //     if (!args.length) {
+        //         return message.channel.send(`Faltam Argumentos , ${message.author}!`);
+        //     }else{
+        //         const args = message.content.slice(Prefix.length).trim().split('send');
+        //         message.guild.members.cache.each(
+        //             guild => guild.user.send(args)
+        //         );
+        //     }
+        // }
+
+        // if (command == 'nickname') {
+        //     let Guild = await client.guilds.cache.get(args[0]);
+        //     if(!Guild){ return(false) } //Can't leave guild
+        //     return Guild.leave();
+        // }
+
+        // if (!message.author.bot && command != "pontos") {
+        //     if (!scores[message.author.tag]) {
+        //         scores[message.author.tag] = {
+        //             money: 0
+        //         };
+        //     }
+        //     scores[message.author.tag].money += 25;
+        //     fs.writeFileSync("../scores.json", JSON.stringify(scores));
+        // }
+
+        // if (command == "pontos") {
+
+        //     if (!scores[message.author.tag]) {
+        //         scores[message.author.tag] = {
+        //             money: 0
+        //         };
+        //     }
+
+        //     message.reply(`Seus pontos é: ${scores[message.author.tag].money}`);
+
+        //     fs.writeFileSync("../scores.json", JSON.stringify(scores));
+        // }
+
+        // if (command == 'avatar') {
+        //     const args = message.content.slice(Prefix.length).trim().split('avatar');
+        //     const user = client.users.cache.get(message.author.id)
+
+        //     const embed = new MessageEmbed()
+        //         .setTitle('WayberCraft!')
+        //         .setAuthor("Info", "https://waybercraft.com.br/images/icon_app.png")
+        //         .setDescription("TESTE")
+        //         .setThumbnail("https://waybercraft.com.br/images/icon_app.png")
+        //         .setImage("https://waybercraft.com.br/images/header.png")
+        //         .setFooter("by fabegalo :D")
+        //         //.addField("Pontos: ", scores[message.author.tag] == undefined ? 0 : scores[message.author.tag].money)
+        //         //.addField("Membros: ", message.guild.memberCount ?? "teste")
+        //         .setColor('ORANGE')
+        //         .setTimestamp()
+
+        //     message.channel.send({ embeds: [embed] })
+        // }
+
+        // if (command == 'sendto') {
+        //     if (!args.length) {
+        //         return message.channel.send(`Faltam Argumentos , ${message.author}!`);
+        //     } else {
+        //         const user = message.mentions.users.first();
+        //         if (user == undefined) {
+        //             return message.reply('insira uma menção valida!');
+        //         }
+        //         message.delete({ timeout: 10 });
+        //         const args = message.content.slice(Prefix.length).trim().split(`sendTo <@!${user.id}>`);
+        //         user.send(args);
+        //     }
+        // }
+//
