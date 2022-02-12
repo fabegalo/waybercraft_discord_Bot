@@ -33,11 +33,18 @@ async function execCommands(client) {
 		}
 
 
+		// Condição para tratar as mensagens dos usuarios e verificar se há palavrões
 		if (!message.author.bot) {
-			for (x = 0; x < words.length; x++) {
-				if (message.content.match('\\b' + words[x] + '\\b', 'gi') != null) {
-					message.delete({ timeout: 10 });
-					message.channel.send(`O: ${message.author.username}\n <@!${message.author.id}> meça suas palavras parça`);
+			//isBadWord = false
+			for (x = 0; x < Badword.length; x++) {
+				if (message.content.toLowerCase().match('\\b' + Badword[x] + '\\b', 'gi') != null) {
+					//isBadWord = true
+					message.delete()
+					message.channel.send(
+						Messages[Math.floor(Math.random() * Messages.length)]
+						.replaceAll('AuthorID',
+							message.author.id));
+					break
 				}
 			}
 		}
