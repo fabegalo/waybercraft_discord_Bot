@@ -1,223 +1,107 @@
 {
 	"Command": {
-		"tocar": {	
+		"tocar": {
 			"Use": "AB",
 			"Category": "Música",
-			"Description": "Procura e toca a música pedida."},
-		"toca": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Procura e toca a música pedida."},
-		"search": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Procura e toca a música pedida."},
-		"s": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Procura e toca a música pedida."},
+			"Description": "Procura e toca a música pedida.",
+			"alternatives": ["tocar", "toca", "search"]
+		},
 
-		"parar": {	
+		"parar": {
 			"Use": "AB",
 			"Category": "Música",
-			"Description": "Para a música e me desconecta do canal."},
-		"sair": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Para a música e me desconecta do canal."},
-		"desconectar": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Para a música e me desconecta do canal."},
-		"stop": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Para a música e me desconecta do canal."},
-		"quit": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Para a música e me desconecta do canal."},
+			"Description": "Para a música e me desconecta do canal.",
+			"alternatives": ["parar", "sair", "desconectar", "stop", "quit"]
+		},
 
-		"pular": {	
+		"pular": {
 			"Use": "AB",
 			"Category": "Música",
-			"Description": "Pula para a próxima música."},
-		"proxima": {	
+			"Description": "Pula para a próxima música.",
+			"alternatives": ["pular", "proxima","próxima","next","skip","nextSong","skipSong"]
+		},
+		
+		"lista": {
 			"Use": "AB",
 			"Category": "Música",
-			"Description": "Pula para a próxima música."},
-		"próxima": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Pula para a próxima música."},
-		"next": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Pula para a próxima música."},
-		"skip": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Pula para a próxima música."},
-		"nextSong": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Pula para a próxima música."},
-		"skipSong": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Pula para a próxima música."},
+			"Description": "Exibe a atual fila de músicas.",
+			"alternatives": ["lista", "musicas",	"fila",	"queue"]
+		},
 
-		"lista": {	
+		"autoplay": {
 			"Use": "AB",
 			"Category": "Música",
-			"Description": "Exibe a atual fila de músicas."},
-		"musicas": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Exibe a atual fila de músicas."},
-		"fila": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Exibe a atual fila de músicas."},
-		"queue": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Exibe a atual fila de músicas."},
-
-		"autoplay": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Habilita as recomendações de músicas."},
-		"recomendar": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Habilita as recomendações de músicas."},
-		"recomendações": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Habilita as recomendações de músicas."},
-		"infinity": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Habilita as recomendações de músicas."},
+			"Description": "Habilita as recomendações de músicas.",
+			"alternatives": ["autoplay", "recomendar", "recomendações", "infinity"]
+		},
 
 		"repeat": {	
 			"Use": "AB",
 			"Category": "Música",
-			"Description": "Repete uma música ou a fila."},
-		"loop": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Repete uma música ou a fila."},
-		"repetir": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Repete uma música ou a fila."},
+			"Description": "Repete uma música ou a fila.",
+			"alternatives": ["repeat", "loop", "repetir"]
+		},
 
-		"filtro": {	
+		"filtro": {
 			"Use": "AB",
 			"Category": "Música",
-			"Description": "Adiciona um filtro à música."},
-		"filtros": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Adiciona um filtro à música."},
-		"filter": {	
-			"Use": "AB",
-			"Category": "Música",
-			"Description": "Adiciona um filtro à música."},
+			"Description": "Adiciona um filtro à música.",
+			"alternatives": ["filtro", "filtros", "filter"]
+		},
 
-
-		"perfil": {	
+		"perfil": {
 			"Use": "AB",
 			"Category": "Diversos",
-			"Description": "Mostra as suas informações do (Servidor)[https://minecraft-mp.com/server/283671/vote/]"},
-		"minecraftinfo": {	
-			"Use": "AB",
-			"Category": "Diversos",
-			"Description": "Mostra as suas informações do (Servidor)[https://minecraft-mp.com/server/283671/vote/]"},
-		"mineinfo": {	
-			"Use": "AB",
-			"Category": "Diversos",
-			"Description": "Mostra as suas informações do (Servidor)[https://minecraft-mp.com/server/283671/vote/]"},
-		"miinfo": {	
-			"Use": "AB",
-			"Category": "Diversos",
-			"Description": "Mostra as suas informações do (Servidor)[https://minecraft-mp.com/server/283671/vote/]"},
+			"Description": "Mostra as suas informações do (Servidor)[https://minecraft-mp.com/server/283671/vote/]",
+			"alternatives": ["perfil", "minecraftinfo", "mineinfo", "miinfo"]
+		},
 
 		"ping": {	
 			"Use": "AB",
 			"Category": "Diversos",
-			"Description": "Verifica o tempo de resposta do Bot."},
-		"latency": {	
-			"Use": "AB",
-			"Category": "Diversos",
-			"Description": "Verifica o tempo de resposta do Bot."},
+			"Description": "Verifica o tempo de resposta do Bot.",
+			"alternatives": ["ping", "latency"]
+		},
 
 		"vote": {
 			"Use": "AB",
 			"Category": "Diversos",
-			"Description": "Exibe os links para votar em nosso (servidor)[https://minecraft-mp.com/server/283671/vote/]."},
-		"votar": {
-			"Use": "AB",
-			"Category": "Diversos",
-			"Description": "Exibe os links para votar em nosso (servidor)[https://minecraft-mp.com/server/283671/vote/]."},
+			"Description": "Exibe os links para votar em nosso (servidor)[https://minecraft-mp.com/server/283671/vote/].",
+			"alternatives": ["vote", "votar"]
+		},
 
 		"users": {	
 			"Use": "AB",
 			"Category": "Moderação",
-			"Description": "Exibe os usuários ativos no Discord."},
-		"usuarios": {	
-			"Use": "AB",
-			"Category": "Moderação",
-			"Description": "Exibe os usuários ativos no Discord."},
-		"usuários": {	
-			"Use": "AB",
-			"Category": "Moderação",
-			"Description": "Exibe os usuários ativos no Discord."},
+			"Description": "Exibe os usuários ativos no Discord.",
+			"alternatives": ["users", "usuarios", "usuarios"]
+		},
 
 		"limpar": {	
 			"Use": "AB",
 			"Category": "Moderação",
-			"Description": "Limpa um número `x` de mensagens no Chat."},
-		"clear": {	
-			"Use": "AB",
-			"Category": "Moderação",
-			"Description": "Limpa um número `x` de mensagens no Chat."},
-		"clearchat": {	
-			"Use": "AB",
-			"Category": "Moderação",
-			"Description": "Limpa um número `x` de mensagens no Chat."},
+			"Description": "Limpa um número `x` de mensagens no Chat.",
+			"alternatives": ["limpar", "clear", "clearchat"]
+		},
 
 		"altura": {
 			"Use": "AB",
 			"Category": "Moderação",
-			"Description": "Altera o volume da música."},
-		"volume": {
-			"Use": "AB",
-			"Category": "Moderação",
-			"Description": "Altera o volume da música."},
-		"volume": {
-			"Use": "AB",
-			"Category": "Moderação",
-			"Description": "Altera o volume da música."},
+			"Description": "Altera o volume da música.",
+			"alternatives": ["altura", "volume"]
+		},
 
 		"reload": {
 			"Use": "AB",
 			"Category": "Moderação",
-			"Description": "Reinicia o sistema do Bot."},
-		"reiniciar": {
-			"Use": "AB",
-			"Category": "Moderação",
-			"Description": "Reinicia o sistema do Bot."},
+			"Description": "Reinicia o sistema do Bot.",
+			"alternatives": ["reload", "reiniciar"]
+		},
 
 		"update": {
 			"Use": "AB",
 			"Category": "Moderação",
-			"Description": "Atualiza os cargos dos membros (de acordo com o servidor)"},
-		"atualizar_cargos": {
-			"Use": "AB",
-			"Category": "Moderação",
-			"Description": "Atualiza os cargos dos membros (de acordo com o servidor)"}
+			"Description": "Atualiza os cargos dos membros (de acordo com o servidor)",
+			"alternatives": ["update", "atualizar_cargos"]}
 	}
 }
