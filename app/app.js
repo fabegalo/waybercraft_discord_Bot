@@ -2,9 +2,6 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { Client, Intents, Permissions } = require('discord.js');
 
-// const RPC = require("discord-rpc");
-// const RPCClient = new RPC.Client({ transport: 'websocket' });
-
 var TOKEN = process.env.TOKEN;
 var APPLICATION_ID = process.env.APPLICATION_ID;
 var GUILD_ID = process.env.GUILD_ID;
@@ -20,17 +17,6 @@ const client = new Client({
 const { enablePermissionsManager } = require('./libs/permissionManager');
 const { execCommands } = require('./commands/commands');
 const { execInteractions } = require('./commands/slashCommands');
-
-//const { SlashCommandBuilder } = require('@discordjs/builders');
-
-// const teste = [
-//     new SlashCommandBuilder().setName('echo')
-// 	.setDescription('Replies with your input!')
-// 	.addStringOption(option =>
-// 		option.setName('input')
-// 			.setDescription('The input to echo back')
-// 			.setRequired(true)),
-// ]   .map(command => command.toJSON());
 
 async function initialize() {
     const commands = require("./slashCommands.json");
@@ -69,26 +55,6 @@ client.once('ready', () => {
     //gerenciador de permissões do app
     enablePermissionsManager(client);
 });
-// async function rpcInitialize(){
-//     RPCClient.login({ clientId : "" }).catch(console.error);
-//     RPCClient.on('ready', () => {
-//         console.log('Estamos jogando!')
-//         RPCClient.request('SET_ACTIVITY', {
-//         pid: process.pid,
-//         activity: {
-//             state: "Entre no meu [Discord]()!",
-//             details: "Minecraft em WayberCraft Server",
-//         assets: {
-//                  large_image: "logo",
-//                  large_text: "WayberZito"},
-//         buttons : [
-//             {label : "Jogue no Java!", url : "https://minecraft-mp.com/server-s283671/"},
-//             {label : "Jogue no Bedrock!", url : "minecraft://?addExternalServer=WayBerCraft|br-plus-5.enxadahost.com:10005"}]
-//         }
-//         })
-//     }
-//     )
-// }
 
 client.once("reconnecting", () => {
     console.log("Reconnecting!");
