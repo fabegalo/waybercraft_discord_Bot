@@ -13,6 +13,8 @@ const words = badword.split(' ');
 
 const { distube } = require("../libs/distube");
 
+const { messages } = require('../bad_message.json');
+
 async function execCommands(client) {
 
     client.on('messageCreate', async message => {
@@ -29,7 +31,10 @@ async function execCommands(client) {
             for (x = 0; x < words.length; x++) {
                 if (message.content.match('\\b' + words[x] + '\\b', 'gi') != null) {
                     message.delete({ timeout: 10 });
-                    message.channel.send(`O: ${message.author.username}\n <@!${message.author.id}> meça suas palavras parça`);
+                    //message.channel.send(`O: ${message.author.username}\n <@!${message.author.id}> meça suas palavras parça`);
+
+                    message.channel.send(messages[Math.floor(Math.random() * messages.length)].replaceAll('AuthorID', message.author.id));
+                    break;
                 }
             }
         }
