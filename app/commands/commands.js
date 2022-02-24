@@ -40,7 +40,7 @@ async function execCommands(client) {
         }
 
         if (message.mentions.has(client.user.id)) {
-            if (message.type == 'REPLY') {
+            if (message.type == 'REPLY' && message.member.id != client.user.id) {
 
                 var roleId = '829061318371573772';
                 if (await validaPermissaoCargo(message, roleId)) {
@@ -101,6 +101,25 @@ async function execCommands(client) {
         //     if(!Guild){ return(false) } //Can't leave guild
         //     return Guild.leave();
         // }
+
+        if (command == 'nomembers') {
+            var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
+
+            if (hasPermission) {
+                server = await client.guilds.cache.get(process.env.GUILD_ID);
+                let users = await server.members.fetch();
+
+                var list = "";
+
+                users.map((user, index) => {
+                    if (!user.roles.cache.has("829061785084493834")) {
+                        list = list + `<@${user.user.id}>` + "\n"
+                    }
+                })
+
+                message.reply(list);
+            }
+        }
 
         if (command == 'perfil') {
 

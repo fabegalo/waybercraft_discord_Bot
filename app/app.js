@@ -48,6 +48,20 @@ async function execute() {
 
     execInteractions(client);
     execCommands(client);
+
+    client.on("guildMemberUpdate", (oldMember, newMember) => {
+        const oldStatus = oldMember.premiumSince;
+        const newStatus = newMember.premiumSince;
+
+        if (!oldStatus && newStatus) {
+            client.channels.cache.get('894816314240143410').send(`${newMember.user.tag} Impulsionou o servidor!`);
+            newMember.send('Obrigado por impulsionar o servidor!');
+        }
+
+        if (oldStatus && !newStatus) {
+            client.channels.cache.get('894816314240143410').send(`${newMember.user.tag} Deixou de impulsionar o servidor`);
+        }
+    })
 }
 
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error));
