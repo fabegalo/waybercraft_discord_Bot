@@ -10,12 +10,12 @@ const { validaPermissao, validaPermissaoCargo } = require("../utils/functions");
 //const scores = require("../scores.json");
 //typeof scores; // object
 
-const { badword } = require('../bad_words.json');
+const { badword } = require('../sources/bad_words.json');
 const words = badword.split(' ');
 
 const { distube } = require("../libs/distube");
 
-const { messages } = require('../bad_message.json');
+const { messages } = require('../sources/bad_message.json');
 
 async function execCommands(client) {
 

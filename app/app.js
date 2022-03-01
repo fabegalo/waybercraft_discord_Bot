@@ -24,7 +24,7 @@ const { execInteractions } = require('./commands/newCommands');
 // ]   .map(command => command.toJSON());
 
 async function initialize() {
-    const commands = require("./commands.json");
+    const commands = require("./sources/commands.json");
     const rest = new REST({ version: '9' }).setToken(token);
 
     (async () => {
