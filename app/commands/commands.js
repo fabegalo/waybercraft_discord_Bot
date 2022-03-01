@@ -2,7 +2,9 @@ var { prefix } = require('../config.json');
 
 const { MessageEmbed, Permissions } = require('discord.js');
 
-const { getPerfilApi, getLogs } = require("../api/api")
+const { getPerfilApi, getLogs } = require("../api/api");
+
+const { validaPermissao, validaPermissaoCargo } = require("../utils/functions");
 
 //const fs = require('fs');
 //const scores = require("../scores.json");
@@ -339,7 +341,11 @@ async function execCommands(client) {
                 return message.channel.send(`Faltam Argumentos , ${message.author}!`);
             }
             else {
-                distube.play(message, args.join(" "));
+                distube.play(message.member.voice.channel, args.join(' '), {
+                    message,
+                    textChannel: message.channel,
+                    member: message.member,
+                });
                 return;
             }
         }
@@ -407,28 +413,6 @@ async function execCommands(client) {
         }
 
     });
-}
-
-async function validaPermissao(message, permission) {
-    if (!message.member.permissions.has(permission)) {
-        await message.reply("Você é fraco, lhe falta permissão para usar esse comando");
-        message.delete({ timeout: 10 });
-        return false;
-    }
-
-    return true;
-}
-
-async function validaPermissaoCargo(message, roleId) {
-    //let role = await server.roles.cache.find(role => role.id === roleId);
-
-    if (!await message.member.roles.cache.has(roleId)) {
-        await message.reply("Você é fraco, lhe falta cargo para usar esse comando");
-        message.delete({ timeout: 10 });
-        return false;
-    }
-
-    return true;
 }
 
 module.exports = { execCommands };

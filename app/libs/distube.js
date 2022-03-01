@@ -4,7 +4,8 @@ const { Client, Intents, Permissions } = require('discord.js');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
 
-const distube = new DisTube(client, { searchSongs: 15, emitNewSongOnly: true });
+const { YtDlpPlugin } = require("@distube/yt-dlp")
+const distube = new DisTube(client, { youtubeDL: false, searchSongs: 15, emitNewSongOnly: true, plugins: [new YtDlpPlugin()] });
 
 // Queue status template
 const status = (queue) => `Volume: \`${queue.volume}%\` | Filter: \`${queue.filter || "Off"}\` | Loop: \`${queue.repeatMode ? queue.repeatMode == 2 ? "All Queue" : "This Song" : "Off"}\` | Autoplay: \`${queue.autoplay ? "On" : "Off"}\``;

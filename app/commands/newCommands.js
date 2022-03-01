@@ -1,7 +1,8 @@
 const { distube } = require("../libs/distube");
 
 const { MessageEmbed, Permissions } = require('discord.js');
-const { getCargos } = require("../api/api")
+const { getCargos } = require("../api/api");
+const { removeAllMembersFromRole, addCargo, validaPermissaoInteraction } = require("../utils/functions");
 
 async function execInteractions(client) {
     client.on('interactionCreate', async interaction => {
@@ -27,7 +28,7 @@ async function execInteractions(client) {
         }
 
         if (interaction.commandName === 'reload') {
-            var hasPermission = await validaPermissao(interaction, Permissions.FLAGS.MANAGE_CHANNELS);
+            var hasPermission = await validaPermissaoInteraction(interaction, Permissions.FLAGS.MANAGE_CHANNELS);
             if (hasPermission) {
                 await interaction.reply("Resetting...");
                 client.destroy();
@@ -38,7 +39,7 @@ async function execInteractions(client) {
 
         if (interaction.commandName === 'update') {
             await interaction.reply("Atualizando...");
-            var hasPermission = await validaPermissao(interaction, Permissions.FLAGS.MANAGE_CHANNELS);
+            var hasPermission = await validaPermissaoInteraction(interaction, Permissions.FLAGS.MANAGE_CHANNELS);
             if (hasPermission) {
                 try {
                     var cargo = interaction.options.get("cargo").value;
@@ -67,73 +68,6 @@ async function execInteractions(client) {
             }
         }
     });
-}
-
-async function validaPermissao(interaction, permission) {
-    if (!interaction.memberPermissions.has(permission)) {
-        interaction.reply("Você é fraco, lhe falta permissão para usar esse comando");
-        return false;
-    }
-
-    return true;
-}
-
-async function addCargo(client, cargo, userId) {
-    server = await client.guilds.cache.get(process.env.GUILD_ID)
-    roleName = await getCargoBySimpleName(cargo);
-
-    let role = await server.roles.cache.find(role => role.name === roleName);
-
-    let users = await server.members.fetch()
-
-    users.map((user, index) => {
-        if (user.id == userId) {
-            user.roles.add(role);
-        }
-    })
-}
-
-async function removeCargo(params) {
-
-}
-
-async function removeAllMembersFromRole(client, cargo) {
-    server = client.guilds.cache.get(process.env.GUILD_ID)
-    roleName = await getCargoBySimpleName(cargo);
-    let role = server.roles.cache.find(role => role.name === roleName);
-
-    members = role.members;
-
-    members.map((membro, indice) => {
-        membro.roles.remove(role);
-    })
-
-    return members;
-}
-
-async function getCargoBySimpleName(simpleName) {
-    switch (simpleName) {
-        case 'vip':
-            return '💎 VIPs'
-
-        case 'dono':
-            return '👑 Donos'
-
-        case 'admin':
-            return '🧑‍💼 Admin'
-
-        case 'moderador':
-            return '👨‍✈️ Moderador'
-
-        case 'construtor':
-            return '👷🏻 Builder'
-
-        case 'ajudante':
-            return '🧑‍🔧 Ajudante'
-
-        default:
-            return null
-    }
 }
 
 module.exports = { execInteractions };
