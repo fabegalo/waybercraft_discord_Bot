@@ -17,7 +17,12 @@ const { distube } = require("../libs/distube");
 
 const { messages } = require('../sources/bad_message.json');
 
+const { DiscordTogether } = require('discord-together');
+const { jogar } = require('../libs/games');
+
 async function execCommands(client) {
+
+    client.discordTogether = new DiscordTogether(client);
 
     client.on('messageCreate', async message => {
 
@@ -42,7 +47,7 @@ async function execCommands(client) {
         }
 
         if (message.mentions.has(client.user.id)) {
-            if (message.type == 'REPLY' && message.member.id != client.user.id) {
+            if (message.type == 'REPLY' && message.member.id != client.user.id && message.content.includes(`<@!${client.user.id}>`)) {
 
                 var roleId = '829061318371573772';
                 if (await validaPermissaoCargo(message, roleId)) {
@@ -103,6 +108,16 @@ async function execCommands(client) {
         //     if(!Guild){ return(false) } //Can't leave guild
         //     return Guild.leave();
         // }
+
+        if (command == 'jogar') {
+            message.reply('Este comando só funciona para DESKTOP!');
+
+            if (message.member.voice.channel) {
+                await jogar(client, message, args);
+            } else {
+                message.reply('Precisa estar em um canal de voz para executar esse comando!');
+            };
+        };
 
         if (command == 'nomembers') {
             var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
