@@ -2,6 +2,31 @@ async function removeCargo(params) {
 
 }
 
+async function getAllMembersFromRole(client, roleName, roleId = null) {
+    server = client.guilds.cache.get(process.env.GUILD_ID);
+
+    let role = null;
+
+    if (roleId == null) {
+        role = await server.roles.cache.find(role => role.name === roleName);
+    } else {
+        role = await server.roles.cache.find(role => role.id === roleId);
+    }
+
+    console.log(role);
+    console.log(role.members);
+
+    return role.members;
+}
+
+async function getPremiumMembers(client) {
+    server = client.guilds.cache.get(process.env.GUILD_ID);
+    const members = await server.members.fetch();
+    const boosters = members.filter(m => m.premiumSinceTimestamp);
+
+    return boosters;
+}
+
 async function removeAllMembersFromRole(client, cargo) {
     server = client.guilds.cache.get(process.env.GUILD_ID)
     roleName = await getCargoBySimpleName(cargo);
@@ -88,4 +113,4 @@ async function validaPermissaoCargo(message, roleId) {
 }
 
 
-module.exports = { getCargoBySimpleName, removeAllMembersFromRole, removeCargo, addCargo, validaPermissao, validaPermissaoInteraction, validaPermissaoCargo };
+module.exports = { getCargoBySimpleName, removeAllMembersFromRole, removeCargo, addCargo, validaPermissao, validaPermissaoInteraction, validaPermissaoCargo, getAllMembersFromRole, getPremiumMembers };

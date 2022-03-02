@@ -1,13 +1,33 @@
 const { distube } = require("../libs/distube");
 
 const { MessageEmbed, Permissions } = require('discord.js');
-const { getCargos } = require("../api/api");
-const { removeAllMembersFromRole, addCargo, validaPermissaoInteraction } = require("../utils/functions");
+const { getCargos, setBooster } = require("../api/api");
+const { removeAllMembersFromRole, addCargo, validaPermissaoInteraction, getPremiumMembers } = require("../utils/functions");
 
 async function execInteractions(client) {
     client.on('interactionCreate', async interaction => {
 
         if (!interaction.isCommand()) return;
+
+        if (interaction.commandName === "booster") {
+            var hasPermission = await validaPermissaoInteraction(interaction, Permissions.FLAGS.MANAGE_CHANNELS);
+            if (hasPermission) {
+                await interaction.reply("Sincronizando...");
+
+                var users = await getPremiumMembers(client);
+
+                var retorno = "Usuarios Sincronizados: \n";
+
+                await users.map(async (membro, indice) => {
+                    sucesso = await setBooster(membro.user.id, 'ativo');
+
+                    if (sucesso) {
+                        retorno = retorno + membro.user.tag + '\n';
+                        await interaction.editReply(retorno);
+                    }
+                })
+            }
+        }
 
         if (interaction.commandName === 'ping') {
             await interaction.reply('Pong!');

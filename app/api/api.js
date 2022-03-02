@@ -101,4 +101,28 @@ async function getLogs(discordId, channel) {
     }
 }
 
-module.exports = { getPerfilApi, getLogs, getCargos };
+async function setBooster(discordId, status) {
+    var token = await getToken();
+
+    const body = { 'discordId': discordId, 'status': status };
+
+    const response = await fetch(APP_URL + '/api/v1/booster', {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
+    });
+
+    const data = await response.json() ?? null;
+
+    if (response.status == 200) {
+        return true;
+    }
+
+    if (response.status == 500) {
+        return false
+    } else {
+        return data;
+    }
+}
+
+module.exports = { getPerfilApi, getLogs, getCargos, setBooster };

@@ -11,6 +11,7 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 const { enablePermissionsManager } = require('./libs/permissionManager');
 const { execCommands } = require('./commands/commands');
 const { execInteractions } = require('./commands/newCommands');
+const { setBooster } = require("../app/api/api");
 
 //const { SlashCommandBuilder } = require('@discordjs/builders');
 
@@ -49,17 +50,19 @@ async function execute() {
     execInteractions(client);
     execCommands(client);
 
-    client.on("guildMemberUpdate", (oldMember, newMember) => {
+    client.on("guildMemberUpdate", async (oldMember, newMember) => {
         const oldStatus = oldMember.premiumSince;
         const newStatus = newMember.premiumSince;
 
         if (!oldStatus && newStatus) {
             client.channels.cache.get('894816314240143410').send(`${newMember.user.tag} Impulsionou o servidor!`);
             newMember.send('Obrigado por impulsionar o servidor!');
+            await setBooster(newMember.user.id, 'ativo');
         }
 
         if (oldStatus && !newStatus) {
             client.channels.cache.get('894816314240143410').send(`${newMember.user.tag} Deixou de impulsionar o servidor`);
+            await setBooster(newMember.user.id, 'inativo');
         }
     })
 }

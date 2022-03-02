@@ -4,6 +4,10 @@
         "description": "Replies with Pong!"
     },
     {
+        "name": "booster",
+        "description": "Sincroniza os booster com o servidor!"
+    },
+    {
         "name": "tocar",
         "description": "Tocar uma musica :D !",
         "options": [
