@@ -44,22 +44,22 @@ async function removeAllMembersFromRole(client, cargo) {
 async function getCargoBySimpleName(simpleName) {
     switch (simpleName) {
         case 'vip':
-            return '💎 VIPs'
+            return 'VIPs'
 
         case 'dono':
-            return '👑 Donos'
+            return 'Donos'
 
         case 'admin':
-            return '🧑‍💼 Admin'
+            return 'Admin'
 
         case 'moderador':
-            return '👨‍✈️ Moderador'
+            return 'Moderador'
 
         case 'construtor':
-            return '👷🏻 Builder'
+            return 'Builder'
 
         case 'ajudante':
-            return '🧑‍🔧 Ajudante'
+            return 'Ajudante'
 
         default:
             return null
