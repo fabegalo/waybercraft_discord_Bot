@@ -1,6 +1,4 @@
-//var { prefix } = require('../config.json'); // Removido
-
-const { Servers } = require('../config.json'); // Adicionado
+var { prefix } = require('../config.json');
 
 const { MessageEmbed, Permissions } = require('discord.js');
 
@@ -30,21 +28,11 @@ async function execCommands(client) {
 
         //message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
 
-
-        // Removido
-        // if (message.guild != null && message.guild.id == '354099395903488001') { 
-        //     prefix = ':>';
-        // } else {
-        //     prefix = '!';
-        // }
-
-        // Adicionado
-        if (message.guild.id in Servers) {
-            prefix = Servers[message.guild.id]['Prefix'];
+        if (message.guild != null && message.guild.id == '354099395903488001') {
+            prefix = ':>';
         } else {
             prefix = '!';
         }
-        //
 
         if (!message.author.bot) {
             for (x = 0; x < words.length; x++) {
