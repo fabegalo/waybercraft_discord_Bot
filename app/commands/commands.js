@@ -187,17 +187,7 @@ async function execCommands(client) {
         const args = message.content.slice(prefix.length).trim().split(' ');
         const command = args.shift().toLowerCase();
 
-        // if(command == 'send'){
 
-        //     if (!args.length) {
-        //         return message.channel.send(`Faltam Argumentos , ${message.author}!`);
-        //     }else{
-        //         const args = message.content.slice(prefix.length).trim().split('send');
-        //         message.guild.members.cache.each(
-        //             guild => guild.user.send(args)
-        //         );
-        //     }
-        // }
 
         //Se Mensagem for do servidor WayberCraft
         if (message.guild != null && message.guild.id == '705499998057398273') {
@@ -217,49 +207,75 @@ async function execCommands(client) {
             }
         }
 
-        // if (command == 'nickname') {
-        //     let Guild = await client.guilds.cache.get(args[0]);
-        //     if(!Guild){ return(false) } //Can't leave guild
-        //     return Guild.leave();
-        // }
 
-        // if (command == 'testembed') {
-        //     var PrimeiraEmbed = new MessageEmbed()
-        //         .setDescription(embDescription('PrimeiraEmbed'))
-        //         .setTitle(embTitle('PrimeiraEmbed'))
-        //         .setFooter(embFooter('Default')) // Mais opções em "Footer" que está em embed_info.json
-        //     message.channel.send({embeds: [PrimeiraEmbed]})
-        // }
 
-        if (command == 'jogar') {
-            message.reply('Este comando só funciona para DESKTOP!');
-
-            if (message.member.voice.channel) {
-                await jogar(client, message, args);
-            } else {
-                message.reply('Precisa estar em um canal de voz para executar esse comando!');
-            };
-        };
-
-        if (command == 'nomembers') {
-            var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
-
-            if (hasPermission) {
-                server = await client.guilds.cache.get(process.env.GUILD_ID);
-                let users = await server.members.fetch();
-
-                var list = "";
-
-                users.map((user, index) => {
-                    if (!user.roles.cache.has("829061785084493834")) {
-                        list = list + `<@${user.user.id}>` + "\n"
-                    }
-                })
-
-                message.reply(list);
+        // Music.
+        if (command == "toca" || command == "tocar") {
+            if (!args.length) {
+                return message.channel.send(`Faltam Argumentos , ${message.author}!`);
+            }
+            else {
+                distube.play(message.member.voice.channel, args.join(' '), {
+                    message,
+                    textChannel: message.channel,
+                    member: message.member,
+                });
+                return;
             }
         }
 
+        if (command == "parar") {
+            distube.stop(message);
+            message.channel.send("Parou a música!");
+        }
+
+        if (command == "pular") {
+            distube.skip(message);
+        }
+
+        if (command == "lista") {
+            let queue = distube.getQueue(message);
+
+            if (queue == undefined) {
+                message.channel.send('Lista Vazia!');
+                return;
+            }
+
+            message.channel.send('Fila atual:\n' + queue.songs.map((song, id) =>
+                `**${id + 1}**. ${song.name} - \`${song.formattedDuration}\``
+            ).slice(0, 10).join("\n"));
+        }
+
+        if (command == "autoplay") {
+
+            let queue = distube.getQueue(message);
+
+            if (queue == undefined) {
+                message.channel.send('Nenhuma Musica Tocando!');
+                return;
+            }
+
+            let mode = distube.toggleAutoplay(message);
+            message.channel.send("Set autoplay mode to `" + (mode ? "On" : "Off") + "`");
+        }
+
+
+        // Avançados.
+        if (["repeat", "loop"].includes(command)) {
+            distube.setRepeatMode(message, parseInt(args[0]));
+        }
+
+        if (command == 'filtros') {
+            message.channel.send("Filtro de fila atual:: " + ("Off" + '\n Filtros Disponiveis: ' + '\n 3d' + '\n bassboost' + '\n karaoke' + '\n nightcore' + '\n vaporwave'));
+        }
+
+        if ([`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`].includes(command)) {
+            let filter = distube.setFilter(message, command);
+            message.channel.send("Filtro de fila atual: " + (filter || "Off"));
+        }
+
+
+        // Diversos.
         if (command == 'perfil') {
 
             var infoMsg
@@ -365,6 +381,69 @@ async function execCommands(client) {
             message.channel.send({ embeds: [profileEmbed] })
         }
 
+        if (command == 'avatar') {
+            const args = message.content.slice(prefix.length).trim().split('avatar');
+            const user = client.users.cache.get(message.author.id)
+
+            const embed = new MessageEmbed()
+                .setTitle('WayberCraft!')
+                .setAuthor("Info", "https://waybercraft.com.br/images/icon_app.png")
+                .setDescription("TESTE")
+                .setThumbnail("https://waybercraft.com.br/images/icon_app.png")
+                .setImage("https://waybercraft.com.br/images/header.png")
+                .setFooter("by fabegalo :D")
+                //.addField("Pontos: ", scores[message.author.tag] == undefined ? 0 : scores[message.author.tag].money)
+                //.addField("Membros: ", message.guild.memberCount ?? "teste")
+                .setColor('ORANGE')
+                .setTimestamp()
+
+            message.channel.send({ embeds: [embed] })
+        }
+
+        if (command == "ping") { // Check if message is "!ping"
+            message.channel.send("Pinging ...") // Placeholder for pinging ... 
+                .then((msg) => { // Resolve promise
+                    msg.edit("Ping: " + (Date.now() - msg.createdTimestamp)) // Edits message with current timestamp minus timestamp of message
+                });
+        }
+
+        if (command == 'users') {
+            var list = [];
+            var count = 0;
+            message.guild.members.cache.each(function () {
+                guild => list += guild.user.username + ' \n'
+                count++;
+            });
+            message.channel.send('Quantidade: ' + count + '\n' + list);
+            message.channel.send(`Online: ${client.guilds.cache.size}`);
+        }
+
+        if (command == 'jogar') {
+            message.reply('Este comando só funciona para DESKTOP!');
+
+            if (message.member.voice.channel) {
+                await jogar(client, message, args);
+            } else {
+                message.reply('Precisa estar em um canal de voz para executar esse comando!');
+            };
+        }
+
+        if (command == 'sendto') {
+            if (!args.length) {
+                return message.channel.send(`Faltam Argumentos , ${message.author}!`);
+            } else {
+                const user = message.mentions.users.first();
+                if (user == undefined) {
+                    return message.reply('insira uma menção valida!');
+                }
+                message.delete({ timeout: 10 });
+                const args = message.content.slice(prefix.length).trim().split(`sendTo <@!${user.id}>`);
+                user.send(args);
+            }
+        }
+
+
+        // Moderação.
         if (command == 'limpar') {
 
             if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
@@ -398,31 +477,72 @@ async function execCommands(client) {
             }
         }
 
-        if (command == 'avatar') {
-            const args = message.content.slice(prefix.length).trim().split('avatar');
+        if (command == "altura") {
+            var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
+
+            if (hasPermission) {
+                distube.setVolume(message, parseInt(args[0]));
+                message.channel.send("Alterou o volume! para: " + parseInt(args[0]));
+            }
+        }
+
+        if (command == 'nomembers') {
+            var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
+
+            if (hasPermission) {
+                server = await client.guilds.cache.get(process.env.GUILD_ID);
+                let users = await server.members.fetch();
+
+                var list = "";
+
+                users.map((user, index) => {
+                    if (!user.roles.cache.has("829061785084493834")) {
+                        list = list + `<@${user.user.id}>` + "\n"
+                    }
+                })
+
+                message.reply(list);
+            }
+        }
+
+
+        // Misc.
+        if (command == 'comandos') {
             const user = client.users.cache.get(message.author.id)
-
-            const embed = new MessageEmbed()
-                .setTitle('WayberCraft!')
-                .setAuthor("Info", "https://waybercraft.com.br/images/icon_app.png")
-                .setDescription("TESTE")
-                .setThumbnail("https://waybercraft.com.br/images/icon_app.png")
-                .setImage("https://waybercraft.com.br/images/header.png")
-                .setFooter("by fabegalo :D")
-                //.addField("Pontos: ", scores[message.author.tag] == undefined ? 0 : scores[message.author.tag].money)
-                //.addField("Membros: ", message.guild.memberCount ?? "teste")
-                .setColor('ORANGE')
-                .setTimestamp()
-
-            message.channel.send({ embeds: [embed] })
+            user.send('Olá, eu sou o waynerzito estou aqui para te ajudar \n' + 'Aqui esta a lista de comandos: \n' + ' \n !toca {url} \n !users \n !parar \n !sendTo {@mention} {msg here}');
         }
 
-        if (command == "ping") { // Check if message is "!ping"
-            message.channel.send("Pinging ...") // Placeholder for pinging ... 
-                .then((msg) => { // Resolve promise
-                    msg.edit("Ping: " + (Date.now() - msg.createdTimestamp)) // Edits message with current timestamp minus timestamp of message
-                });
-        }
+
+
+////////// Comandos desabilitados.
+        // if (command == 'testembed') {
+        //     var PrimeiraEmbed = new MessageEmbed()
+        //         .setDescription(embDescription('PrimeiraEmbed'))
+        //         .setTitle(embTitle('PrimeiraEmbed'))
+        //         .setFooter(embFooter('Default')) // Mais opções em "Footer" que está em embed_info.json
+        //     message.channel.send({embeds: [PrimeiraEmbed]})
+        // }
+
+
+        // if(command == 'send'){
+
+        //     if (!args.length) {
+        //         return message.channel.send(`Faltam Argumentos , ${message.author}!`);
+        //     }else{
+        //         const args = message.content.slice(prefix.length).trim().split('send');
+        //         message.guild.members.cache.each(
+        //             guild => guild.user.send(args)
+        //         );
+        //     }
+        // }
+
+
+        // if (command == 'nickname') {
+        //     let Guild = await client.guilds.cache.get(args[0]);
+        //     if(!Guild){ return(false) } //Can't leave guild
+        //     return Guild.leave();
+        // }
+
 
         // if (!message.author.bot && command != "pontos") {
         //     if (!scores[message.author.tag]) {
@@ -434,6 +554,7 @@ async function execCommands(client) {
         //     scores[message.author.tag].money += 25;
         //     fs.writeFileSync("../scores.json", JSON.stringify(scores));
         // }
+
 
         // if (command == "pontos") {
 
@@ -448,106 +569,6 @@ async function execCommands(client) {
         //     fs.writeFileSync("../scores.json", JSON.stringify(scores));
         // }
 
-        if (command == 'sendto') {
-            if (!args.length) {
-                return message.channel.send(`Faltam Argumentos , ${message.author}!`);
-            } else {
-                const user = message.mentions.users.first();
-                if (user == undefined) {
-                    return message.reply('insira uma menção valida!');
-                }
-                message.delete({ timeout: 10 });
-                const args = message.content.slice(prefix.length).trim().split(`sendTo <@!${user.id}>`);
-                user.send(args);
-            }
-        }
-
-        if (command == 'users') {
-            var list = [];
-            var count = 0;
-            message.guild.members.cache.each(function () {
-                guild => list += guild.user.username + ' \n'
-                count++;
-            });
-            message.channel.send('Quantidade: ' + count + '\n' + list);
-            message.channel.send(`Online: ${client.guilds.cache.size}`);
-        }
-
-        if (command == "toca" || command == "tocar") {
-            if (!args.length) {
-                return message.channel.send(`Faltam Argumentos , ${message.author}!`);
-            }
-            else {
-                distube.play(message.member.voice.channel, args.join(' '), {
-                    message,
-                    textChannel: message.channel,
-                    member: message.member,
-                });
-                return;
-            }
-        }
-
-        if (command == "autoplay") {
-
-            let queue = distube.getQueue(message);
-
-            if (queue == undefined) {
-                message.channel.send('Nenhuma Musica Tocando!');
-                return;
-            }
-
-            let mode = distube.toggleAutoplay(message);
-            message.channel.send("Set autoplay mode to `" + (mode ? "On" : "Off") + "`");
-        }
-
-        if (["repeat", "loop"].includes(command)) {
-            distube.setRepeatMode(message, parseInt(args[0]));
-        }
-
-        if (command == "parar") {
-            distube.stop(message);
-            message.channel.send("Parou a música!");
-        }
-
-        if (command == "altura") {
-            var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
-
-            if (hasPermission) {
-                distube.setVolume(message, parseInt(args[0]));
-                message.channel.send("Alterou o volume! para: " + parseInt(args[0]));
-            }
-        }
-
-        if (command == "pular") {
-            distube.skip(message);
-        }
-
-        if (command == "lista") {
-            let queue = distube.getQueue(message);
-
-            if (queue == undefined) {
-                message.channel.send('Lista Vazia!');
-                return;
-            }
-
-            message.channel.send('Fila atual:\n' + queue.songs.map((song, id) =>
-                `**${id + 1}**. ${song.name} - \`${song.formattedDuration}\``
-            ).slice(0, 10).join("\n"));
-        }
-
-        if ([`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`].includes(command)) {
-            let filter = distube.setFilter(message, command);
-            message.channel.send("Filtro de fila atual: " + (filter || "Off"));
-        }
-
-        if (command == 'comandos') {
-            const user = client.users.cache.get(message.author.id)
-            user.send('Olá, eu sou o waynerzito estou aqui para te ajudar \n' + 'Aqui esta a lista de comandos: \n' + ' \n !toca {url} \n !users \n !parar \n !sendTo {@mention} {msg here}');
-        }
-
-        if (command == 'filtros') {
-            message.channel.send("Filtro de fila atual:: " + ("Off" + '\n Filtros Disponiveis: ' + '\n 3d' + '\n bassboost' + '\n karaoke' + '\n nightcore' + '\n vaporwave'));
-        }
 
     });
 }
