@@ -182,6 +182,12 @@ async function execCommands(client) {
         // }
 
         //-----------------Seção para tratar comandos dos usuarios------------------------------------------------------------------
+        // ?: ↓↓↓
+        // One line-break = New Command.
+        // Two line-break = New Category.
+        // 3 bars (/) = SubCategory
+
+
         if (!message.content.startsWith(prefix) || message.author.bot) return;
 
         const args = message.content.slice(prefix.length).trim().split(' ');
@@ -210,7 +216,7 @@ async function execCommands(client) {
 
 
         // Music.
-        if (command == "toca" || command == "tocar") {
+        if (["toca", "tocar"].includes(command)) {
             if (!args.length) {
                 return message.channel.send(`Faltam Argumentos , ${message.author}!`);
             }
@@ -224,16 +230,16 @@ async function execCommands(client) {
             }
         }
 
-        if (command == "parar") {
+        if (["parar", "finalizar", "desconectar"].includes(command)) {
             distube.stop(message);
             message.channel.send("Parou a música!");
         }
 
-        if (command == "pular") {
+        if (["pular", "pula", "proxima", "próxima", "prox"].includes(command)) {
             distube.skip(message);
         }
 
-        if (command == "lista") {
+        if (["lista", "fila"].includes(command)) {
             let queue = distube.getQueue(message);
 
             if (queue == undefined) {
@@ -246,7 +252,7 @@ async function execCommands(client) {
             ).slice(0, 10).join("\n"));
         }
 
-        if (command == "autoplay") {
+        if (["autoplay"].includes(command)) {
 
             let queue = distube.getQueue(message);
 
@@ -259,13 +265,12 @@ async function execCommands(client) {
             message.channel.send("Set autoplay mode to `" + (mode ? "On" : "Off") + "`");
         }
 
-
-        // Avançados.
-        if (["repeat", "loop"].includes(command)) {
+        /// Avançados.
+        if (["repetir", "repeat", "loop"].includes(command)) {
             distube.setRepeatMode(message, parseInt(args[0]));
         }
 
-        if (command == 'filtros') {
+        if (["filtros"].includes(command)) {
             message.channel.send("Filtro de fila atual:: " + ("Off" + '\n Filtros Disponiveis: ' + '\n 3d' + '\n bassboost' + '\n karaoke' + '\n nightcore' + '\n vaporwave'));
         }
 
@@ -276,7 +281,7 @@ async function execCommands(client) {
 
 
         // Diversos.
-        if (command == 'perfil') {
+        if (["perfil"].includes(command)) {
 
             var infoMsg
 
@@ -381,7 +386,7 @@ async function execCommands(client) {
             message.channel.send({ embeds: [profileEmbed] })
         }
 
-        if (command == 'avatar') {
+        if (["avatar"].includes(command)) {
             const args = message.content.slice(prefix.length).trim().split('avatar');
             const user = client.users.cache.get(message.author.id)
 
@@ -400,14 +405,14 @@ async function execCommands(client) {
             message.channel.send({ embeds: [embed] })
         }
 
-        if (command == "ping") { // Check if message is "!ping"
+        if (["ping", "latency"].includes(command)) { // Check if message is "!ping"
             message.channel.send("Pinging ...") // Placeholder for pinging ... 
                 .then((msg) => { // Resolve promise
                     msg.edit("Ping: " + (Date.now() - msg.createdTimestamp)) // Edits message with current timestamp minus timestamp of message
                 });
         }
 
-        if (command == 'users') {
+        if (["users"].includes(command)) {
             var list = [];
             var count = 0;
             message.guild.members.cache.each(function () {
@@ -418,7 +423,7 @@ async function execCommands(client) {
             message.channel.send(`Online: ${client.guilds.cache.size}`);
         }
 
-        if (command == 'jogar') {
+        if (["jogar"].includes(command)) {
             message.reply('Este comando só funciona para DESKTOP!');
 
             if (message.member.voice.channel) {
@@ -428,7 +433,7 @@ async function execCommands(client) {
             };
         }
 
-        if (command == 'sendto') {
+        if (["sendto"].includes(command)) {
             if (!args.length) {
                 return message.channel.send(`Faltam Argumentos , ${message.author}!`);
             } else {
@@ -444,7 +449,7 @@ async function execCommands(client) {
 
 
         // Moderação.
-        if (command == 'limpar') {
+        if (["limpar", "clear", "clearchat"].includes(command)) {
 
             if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
                 return message.reply("Você é fraco, lhe falta permissão para Gerenciar Mensagens para usar esse comando");
@@ -477,7 +482,7 @@ async function execCommands(client) {
             }
         }
 
-        if (command == "altura") {
+        if (["altura", "volume"].includes(command)) {
             var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
 
             if (hasPermission) {
@@ -486,7 +491,7 @@ async function execCommands(client) {
             }
         }
 
-        if (command == 'nomembers') {
+        if (["nomembers"].includes(command)) {
             var hasPermission = await validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS);
 
             if (hasPermission) {
@@ -633,14 +638,14 @@ async function execCommands(client) {
 
 
         // Misc.
-        if (command == 'comandos') {
+        if (["comando"].includes(command)) {
             const user = client.users.cache.get(message.author.id)
             user.send('Olá, eu sou o waynerzito estou aqui para te ajudar \n' + 'Aqui esta a lista de comandos: \n' + ' \n !toca {url} \n !users \n !parar \n !sendTo {@mention} {msg here}');
         }
 
 
 
-////////// Comandos desabilitados.
+//////// Comandos desabilitados.
         // if (command == 'testembed') {
         //     var PrimeiraEmbed = new MessageEmbed()
         //         .setDescription(embDescription('PrimeiraEmbed'))
