@@ -1,0 +1,41 @@
+{
+	"Embed": {
+		"PrimeiraEmbed": {
+			"Title": "Titulo da PrimeiraEmbed",
+			"Description": [
+				"Descricao da PrimeiraEmbed",
+				"Com quebra de linha"]
+		},
+
+
+		"Colors": {
+			"Blocked": "FF0000",
+			"Processing": "ECFF21",
+			"Warning": "F1FF72",
+			"Done": "2DFFBF",
+			"Erro": "FE5D5D",
+			"Cyan": "01BDF4"
+		},
+
+		"Footer": {
+			"Default": "Prefix: [<ServerPrefix>]  |  <Powered>",
+			"ServerPrefix": "Meu Prefixo é: <ServerPrefix>",
+			"UserID": "ID: <UserID>",
+			"AnnouncerID": "Responsável: <AnnouncerID>"
+		}
+	},
+
+	"About": {
+		"Powered": "Powered By Fabegalo :D",
+		"Server": {
+			"Guild": "https://discord.gg/KtZN2kbR2N",
+			"GuildID": "705499998057398273",
+			"Site": "https://www.waybercraft.com.br/",
+			"IconURL": "https://i.imgur.com/bw0Idpj.png",
+			"HeaderURL": "https://www.waybercraft.com.br/images/header.png",
+			"JavaURL": "https://minecraft-mp.com/server-s283671/",
+			"BedrockURL": "https://minecraftpocket-servers.com/server/110446/"}
+	}
+}
+
+

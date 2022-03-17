@@ -6,6 +6,8 @@ const { getPerfilApi, getLogs } = require("../api/api");
 
 const { validaPermissao, validaPermissaoCargo } = require("../utils/functions");
 
+const { Embed, About } = require('../sources/embed_info.json');
+
 //const fs = require('fs');
 //const scores = require("../scores.json");
 //typeof scores; // object
@@ -20,6 +22,7 @@ const { messages } = require('../sources/bad_message.json');
 const { DiscordTogether } = require('discord-together');
 const { jogar } = require('../libs/games');
 
+
 async function execCommands(client) {
 
     client.discordTogether = new DiscordTogether(client);
@@ -33,6 +36,110 @@ async function execCommands(client) {
         } else {
             prefix = '!';
         }
+
+
+        // Funções para auxiliar nas Embeds.
+        function embTitle(Name, Permission) {
+            if (typeof(Embed[Name]['Title']) == 'object') {
+                var Title = Embed[Name]['Title'].join('\n')
+                    .replaceAll('<ServerPrefix>', prefix)
+                    .replaceAll('<SupportPrefix>', Servers["705499998057398273"]["Prefix"])
+                    .replaceAll('<UserID>', message.author.id)
+                    .replaceAll('<WBServer>', About['Server']['Guild'])
+                    .replaceAll('<JavaURL>', About['Server']['JavaURL'])
+                    .replaceAll('<BedrockURL>', About['Server']['BedrockURL'])
+                    if(Permission != undefined) {
+                        var Title = Title.replaceAll('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+                    }
+                }
+
+            if (typeof(Embed[Name]['Title']) == 'string') {
+                var Title = Embed[Name]['Title']
+                    .replace("<ServerPrefix>", prefix)
+                    .replace("<SupportPrefix>", Servers["705499998057398273"]["Prefix"])
+                    .replace('<UserID>', message.author.id)
+                    .replace('<WBServer>', About['Server']['Guild'])
+                    .replace('<JavaURL>', About['Server']['JavaURL'])
+                    .replace('<BedrockURL>', About['Server']['BedrockURL'])
+                    if(Permission != undefined) {
+                        var Title = Title.replace('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+                    }
+                }
+            return Title;
+        }
+
+        function embDescription(Name, Permission) {
+            if (typeof(Embed[Name]['Description']) == 'object') {
+                var Description = Embed[Name]['Description'].join('\n')
+                    .replaceAll('<ServerPrefix>', prefix)
+                    .replaceAll("<SupportPrefix>", Servers["705499998057398273"]["Prefix"])
+                    .replaceAll('<UserID>', message.author.id)
+                    .replaceAll('<WBServer>', About['Server']['Guild'])
+                    .replaceAll('<JavaURL>', About['Server']['JavaURL'])
+                    .replaceAll('<BedrockURL>', About['Server']['BedrockURL'])
+                    if(Permission != undefined) {
+                        var Description = Description.replaceAll('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+                    }
+                }
+
+            if (typeof(Embed[Name]['Description']) == 'string') {
+                var Description = Embed[Name]['Description']
+                    .replace('<ServerPrefix>', prefix)
+                    .replace("<SupportPrefix>", Servers["705499998057398273"]["Prefix"])
+                    .replace('<UserID>', message.author.id)
+                    .replace('<WBServer>', About['Server']['Guild'])
+                    .replace('<JavaURL>', About['Server']['JavaURL'])
+                    .replace('<BedrockURL>', About['Server']['BedrockURL'])
+                    if(Permission != undefined) {
+                        var Description = Description.replace('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+                    }
+                }
+            return Description;
+        }
+
+        function embFooter(Name, Permission) {
+            if (typeof(Embed['Footer'][Name]) == 'object') {
+                var Footer = Embed['Footer'][Name].join('\n')
+                    .replaceAll('<ServerPrefix>', prefix)
+                    .replaceAll("<SupportPrefix>", Servers["705499998057398273"]["Prefix"])
+                    .replaceAll('<Powered>', About['Powered'])
+                    .replaceAll('<UserID>', message.author.id)
+                    .replaceAll('<WBServer>', About['Server']['Guild'])
+                    .replaceAll('<JavaURL>', About['Server']['JavaURL'])
+                    .replaceAll('<BedrockURL>', About['Server']['BedrockURL'])
+                    .replaceAll('<AnnouncerID>', message.author.username)
+                    if(Permission != undefined) {
+                        var Footer = Footer.replaceAll('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+                    }
+                }
+
+            if (typeof(Embed['Footer'][Name]) == 'string') {
+                var Footer = Embed['Footer'][Name]
+                    .replace('<ServerPrefix>', prefix)
+                    .replace("<SupportPrefix>", Servers["705499998057398273"]["Prefix"])
+                    .replace('<Powered>', About['Powered'])
+                    .replace('<UserID>', message.author.id)
+                    .replace('<WBServer>', About['Server']['Guild'])
+                    .replace('<JavaURL>', About['Server']['JavaURL'])
+                    .replace('<BedrockURL>', About['Server']['BedrockURL'])
+                    .replace('<AnnouncerID>', message.author.username)
+                    if(Permission != undefined) {
+                        var Footer = Footer.replace('<Permission>', Servers["Permissions"][`${Permission}n`]["Name"])
+                    }
+                }
+            return Footer;
+        }
+
+        function replaceArg(Anything) {
+            var Out = Anything.replaceAll('<ServerPrefix>', prefix)
+                .replaceAll("<SupportPrefix>", Servers["705499998057398273"]["Prefix"])
+                .replaceAll('<UserID>', message.author.id)
+                .replaceAll('<WBServer>', About['Server']['Guild'])
+                .replaceAll('<JavaURL>', About['Server']['JavaURL'])
+                .replaceAll('<BedrockURL>', About['Server']['BedrockURL'])
+            return Out;
+        }
+
 
         if (!message.author.bot) {
             for (x = 0; x < words.length; x++) {
@@ -301,6 +408,15 @@ async function execCommands(client) {
                     msg.edit("Ping: " + (Date.now() - msg.createdTimestamp)) // Edits message with current timestamp minus timestamp of message
                 });
         }
+
+        if (command == 'testembed') {
+            var PrimeiraEmbed = new MessageEmbed()
+                .setDescription(embDescription('PrimeiraEmbed'))
+                .setTitle(embTitle('PrimeiraEmbed'))
+                .setFooter(embFooter('Default')) // Mais opções em "Footer" que está em embed_info.json
+            message.channel.send({embeds: [PrimeiraEmbed]})
+        }
+
 
         // if (!message.author.bot && command != "pontos") {
         //     if (!scores[message.author.tag]) {
