@@ -85,23 +85,25 @@ async function execCommands(client) {
         //     }
         // }
 
+
         //Se Mensagem for do servidor WayberCraft
-        if (message.guild != null && message.guild.id == '705499998057398273') {
-            // if(message.content.match("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(?!$)|$)){4}$")){
-            //     message.delete();
-            //     message.channel.send(`<@!${message.author.id}> Você não pode enviar convites de outros servidores aqui!`);
-            // }
-            if (command == 'logs') {
-                var hasPermission = validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS)
+        // if (message.guild != null && message.guild.id == '705499998057398273') {
+        //     // if(message.content.match("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.(?!$)|$)){4}$")){
+        //     //     message.delete();
+        //     //     message.channel.send(`<@!${message.author.id}> Você não pode enviar convites de outros servidores aqui!`);
+        //     // }
+        //     if (command == 'logs') {
+        //         var hasPermission = validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS)
 
-                if (hasPermission) {
-                    const user = client.users.cache.get(message.author.id)
-                    var discordId = user.id;
+        //         if (hasPermission) {
+        //             const user = client.users.cache.get(message.author.id)
+        //             var discordId = user.id;
 
-                    var logs = await getLogs(discordId, message.channel);
-                }
-            }
-        }
+        //             var logs = await getLogs(discordId, message.channel);
+        //         }
+        //     }
+        // }
+
 
         // if (command == 'nickname') {
         //     let Guild = await client.guilds.cache.get(args[0]);
@@ -416,6 +418,18 @@ async function execCommands(client) {
         if ([`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`].includes(command)) {
             let filter = distube.setFilter(message, command);
             message.channel.send("Filtro de fila atual: " + (filter || "Off"));
+        }
+
+        if (["logs"].includes(command)) {
+            if (message.guild != null && message.guild.id == '705499998057398273') {
+                var hasPermission = validaPermissao(message, Permissions.FLAGS.MANAGE_CHANNELS)
+                if (hasPermission) {
+                    const user = client.users.cache.get(message.author.id)
+                    var discordId = user.id;
+
+                    var logs = await getLogs(discordId, message.channel);
+                }
+            }
         }
 
         if (command == 'comandos') {
