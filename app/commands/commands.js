@@ -40,9 +40,9 @@ async function execCommands(client) {
 
         // Adicionado
         if (message.guild.id in Servers) {
-            var Prefix = Servers[message.guild.id]['Prefix']
+            var prefix = Servers[message.guild.id]['Prefix']
         } else {
-            var Prefix = "!"
+            var prefix = "!"
         }
 
         if (!message.author.bot) {
