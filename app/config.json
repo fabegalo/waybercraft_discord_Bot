@@ -29,11 +29,17 @@
 				"SkyNet": "934693088255946822",
 				"Cores": "941344130687197214"},
 			"AnnouncerRole": "931552603878350899"},
-
+			
 		"354099395903488001": {
 			"ServerName": "Wayner's Server Official",
 			"Prefix": ":>",
-			"Roles":{}
+			"Roles":{}},
+			
+		"ID do servidor aqui (GuildID)": {
+			"ServerName": "Nome do servidor aqui.",
+			"Prefix": "Prefixo",
+			"Roles": {
+				"Somente o nome do cargo": "ID do cargo (RoleID)"}
 		}
 	}
 }
