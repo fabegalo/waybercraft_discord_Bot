@@ -46,26 +46,26 @@ async function execCommands(client) {
             }
         }
 
-        if (message.mentions.has(client.user.id)) {
-            if (message.type == 'REPLY' && message.member.id != client.user.id && message.content.includes(`<@!${client.user.id}>`)) {
+        // if (message.mentions.has(client.user.id)) {
+        //     if (message.type == 'REPLY' && message.member.id != client.user.id && message.content.includes(`<@!${client.user.id}>`)) {
 
-                var roleId = '829061318371573772';
-                if (await validaPermissaoCargo(message, roleId)) {
-                    var msg = await message.channel.messages.fetch(message.reference.messageId);
+        //         var roleId = '829061318371573772';
+        //         if (await validaPermissaoCargo(message, roleId)) {
+        //             var msg = await message.channel.messages.fetch(message.reference.messageId);
 
-                    var textChannel = message.content.slice(prefix.length).trim().split(' ')[1];
+        //             var textChannel = message.content.slice(prefix.length).trim().split(' ')[1];
 
-                    if (textChannel == undefined) {
-                        message.reply('Canal de texto Não encontrado !');
-                    } else {
-                        var channelID = textChannel.replace(/\D/g, '');
-                        const channel = client.channels.cache.find(channel => channel.id === channelID);
-                        channel.send(msg.content);
-                        message.channel.send('Mensagem enviada com sucesso para canal ' + textChannel + ' ! : ```' + msg.content + '``` ');
-                    }
-                }
-            }
-        }
+        //             if (textChannel == undefined) {
+        //                 message.reply('Canal de texto Não encontrado !');
+        //             } else {
+        //                 var channelID = textChannel.replace(/\D/g, '');
+        //                 const channel = client.channels.cache.find(channel => channel.id === channelID);
+        //                 channel.send(msg.content);
+        //                 message.channel.send('Mensagem enviada com sucesso para canal ' + textChannel + ' ! : ```' + msg.content + '``` ');
+        //             }
+        //         }
+        //     }
+        // }
 
         //-----------------Seção para tratar comandos dos usuarios------------------------------------------------------------------
         if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -416,6 +416,120 @@ async function execCommands(client) {
         if ([`3d`, `bassboost`, `echo`, `karaoke`, `nightcore`, `vaporwave`].includes(command)) {
             let filter = distube.setFilter(message, command);
             message.channel.send("Filtro de fila atual: " + (filter || "Off"));
+        }
+
+        if (["avisos", "aviso"].includes(command)) {
+            if (message.type == 'REPLY') {
+                if (await validaPermissaoCargo(message, Servers[message.guild.id]['AnnouncerRole'])) {
+                    
+                    var Message = await message.channel.messages.fetch(message.reference.messageId);
+
+                    if (args[0] == undefined) { var textChannel = 'Empty' }
+                        else {
+                            var textChannel = args[0]
+                        }
+
+
+                    try {
+                        if (textChannel.startsWith('<#') && textChannel.endsWith('>')){
+
+                            var announcePinging = await message.channel.send({ // Pinging...
+                                embeds: [new MessageEmbed()
+                                    .setDescription(embDescription('Pinging'))
+                                    .setColor(Embed['Colors']['Processing'])]
+                                    }
+                                );
+
+                            var channelID = textChannel.replace(/\D/g, '');
+                            const channel = client.channels.cache.find(channel => channel.id === channelID);
+
+                            setTimeout(() => {
+                                announcePinging.edit({embeds: [new MessageEmbed()
+                                    .setTitle(embTitle('announce'))
+                                    .setDescription(embDescription('announce')
+                                        .replace('<TextChannel>', textChannel)
+                                        .replace('<Content>', replaceArg(Message.content)))
+                                    .setColor(Embed['Colors']['Done'])
+                                    .setFooter({text: embFooter('AnnouncerID')})
+                                        ]
+                                    }
+                                )
+                            }, 3400);
+
+                            setTimeout(() => {
+                                channel.send({ embeds: [new MessageEmbed()
+                                    .setTitle(embTitle('announce'))
+                                    .setDescription(replaceArg(Message.content))
+                                    .setColor(Embed['Colors']['Warning'])
+                                    .setFooter({text: embFooter('AnnouncerID')})
+                                    .setTimestamp()
+                                        ]
+                                    }
+                                )
+                            }, 3800);
+                            message.delete()
+
+                        if (textChannel == 'Empty') {
+                            var announcePinging = await message.channel.send({
+                                embeds: [new MessageEmbed()
+                                    .setDescription(embDescription('Pinging'))
+                                    .setColor(Embed['Colors']['Processing'])
+                                    .setTimestamp()]});
+
+                            setTimeout(() => {
+                                announcePinging.edit({embeds: [new MessageEmbed()
+                                .setTitle(embTitle('announce'))
+                                .setDescription(embDescription('announceErro'))
+                                .addField("Erro:", [
+                                    "`Argumentos em falta, é nescessário mencionar um Canal de Texto",
+                                    "para qual a mensagem será enviada!`"].join('\n'))
+                                .setColor(Embed['Colors']['Erro'])
+                                .setFooter({text: embFooter('AnnouncerID')})
+                                .setTimestamp()
+                                        ]
+                                    }
+                                )
+                            }, 3400);
+                            message.delete()
+                        }
+
+                        } else {
+                                var announcePinging = await message.channel.send({
+                                    embeds: [new MessageEmbed()
+                                        .setDescription(embDescription('Ping'))
+                                        .setColor(Embed['Colors']['Processing'])
+                                        .setTimestamp()]});
+
+                                setTimeout(() => {
+                                    announcePinging.edit({embeds: [new MessageEmbed()
+                                    .setTitle(embTitle('announce'))
+                                    .setDescription(embDescription('announceErro'))
+                                    .addField("Erro:",
+                                        "`<Channel> Não é um canal válido.`"
+                                        .replace('<Channel>', textChannel))
+                                    .setColor(Embed['Colors']['Erro'])
+                                    .setFooter({text: embFooter('AnnouncerID')})
+                                            ]
+                                        }
+                                    )
+                                }, 3400);
+                                message.delete()
+                            }
+
+
+                    } catch(erro) {
+                        console.log(`AnnounceErro: ${erro}`)
+                        message.channel.send({ embeds: [new MessageEmbed()
+                            .setTitle(embTitle('announce'))
+                            .setDescription(embDescription('announceErro'))
+                            .addField("Erro:", "<Erro>".replace('<Erro>', erro))
+                            .setColor(Embed['Colors']['Erro'])
+                            .setFooter({text: embFooter('AnnouncerID')})]})
+                        message.delete()
+
+                    }
+                }
+            }
         }
 
         if (command == 'comandos') {
