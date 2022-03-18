@@ -13,6 +13,8 @@ const { execCommands } = require('./commands/commands');
 const { execInteractions } = require('./commands/newCommands');
 const { setBooster } = require("../app/api/api");
 
+//const Guilds = client.guilds.cache.map(guild => guild.id);
+
 //const { SlashCommandBuilder } = require('@discordjs/builders');
 
 // const teste = [

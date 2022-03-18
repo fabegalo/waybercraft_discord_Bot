@@ -1,4 +1,4 @@
-var { prefix } = require('../config.json');
+var { Servers } = require('../config.json');
 
 const { MessageEmbed, Permissions } = require('discord.js');
 
@@ -25,14 +25,8 @@ async function execCommands(client) {
     client.discordTogether = new DiscordTogether(client);
 
     client.on('messageCreate', async message => {
-
+        const prefix = (message.guild.id in Servers) ? Servers[message.guild.id]['Prefix'] : "!";
         //message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
-
-        if (message.guild != null && message.guild.id == '354099395903488001') {
-            prefix = ':>';
-        } else {
-            prefix = '!';
-        }
 
         if (!message.author.bot) {
             for (x = 0; x < words.length; x++) {
