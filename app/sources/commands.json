@@ -5,7 +5,8 @@
     },
     {
         "name": "booster",
-        "description": "Sincroniza os booster com o servidor!"
+        "description": "Sincroniza os booster com o servidor!",
+        "default_permission": false
     },
     {
         "name": "tocar",
