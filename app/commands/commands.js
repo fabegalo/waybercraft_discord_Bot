@@ -41,7 +41,7 @@ async function execCommands(client) {
         }
 
         if (message.mentions.has(client.user.id)) {
-            if (message.type == 'REPLY' && message.member.id != client.user.id && message.content.includes(`<@!${client.user.id}>`)) {
+            if (message.type == 'REPLY' && message.member.id != client.user.id && message.content.includes(`<@${client.user.id}>`)) {
 
                 var roleId = '829061318371573772';
                 if (await validaPermissaoCargo(message, roleId)) {
@@ -257,7 +257,7 @@ async function execCommands(client) {
 
                     await message.channel.messages.fetch({ limit: deleteCount }).then(messages => { // Fetches the messages
                         message.channel.bulkDelete(messages).then(messages => {
-                            message.channel.send(`${messages.size} mensagens limpas nesse chat solicitado por <@!${message.author.id}>`).then(message => {
+                            message.channel.send(`${messages.size} mensagens limpas nesse chat solicitado por <@${message.author.id}>`).then(message => {
                                 setTimeout(() => message.delete(), 8000)
                                 message.react("👌");
                             });
@@ -329,7 +329,7 @@ async function execCommands(client) {
                     return message.reply('insira uma menção valida!');
                 }
                 message.delete({ timeout: 10 });
-                const args = message.content.slice(prefix.length).trim().split(`sendTo <@!${user.id}>`);
+                const args = message.content.slice(prefix.length).trim().split(`sendTo <@${user.id}>`);
                 user.send(args);
             }
         }
