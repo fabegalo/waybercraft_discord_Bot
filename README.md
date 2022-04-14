@@ -1,2 +1,2 @@
 # Discord_Bot
-Discord Bot em Node.Js
+Discord Bot Oficial WayberCraft em Node.Js
